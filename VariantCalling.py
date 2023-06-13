@@ -83,14 +83,14 @@ class VariantCallingData(VariantCalling):
         return np.array(alignments), mutation_types
     
 
-    def char_to_int(self, alignments=None):
+    def char_to_int(self, alignments=None) -> np.ndarray:
         """Maps the char ACGT to the corresponding integers"""
         if alignments is None:
             alignments = self.alignments
         return np.vectorize(self.transdict.get)(alignments)
     
 
-    def plot_data(self, alignments_ints=None, mutation_types=None, mutation_index=0):
+    def plot_data(self, alignments_ints=None, mutation_types=None, mutation_index=0) -> None:
         """Use to plot an alignment at a certain mutation type"""
         if alignments_ints is None or mutation_types is None:
             alignments_ints = self.char_to_int()
