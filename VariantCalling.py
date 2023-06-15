@@ -91,7 +91,12 @@ class VariantCallingData(VariantCalling):
     
 
     def plot_data(self, alignments_ints=None, mutation_types=None, mutation_index=0) -> None:
-        """Use to plot an alignment at a certain mutation type"""
+        """Use to plot an alignment at a certain mutation type
+        
+        Note
+        ----
+        This Function should be refactored, or a new function should be created
+        """
         if alignments_ints is None or mutation_types is None:
             alignments_ints = self.char_to_int()
             mutation_types = self.mutation_types
