@@ -18,7 +18,15 @@ class VariantCallingData(VariantCalling):
         super().__init__(mutation_labels=mutation_labels, mutation_types_names=mutation_types_names)
         self.alignments = None
         self.mutation_types = None
-    
+
+        self.clones = []
+        with open("clones.txt", "r") as f:
+            for clone in f:
+                alignment = []
+                for char in clone.strip():
+                    alignment.append(char)
+                self.clones.append(alignment)
+                
     def simulate_alignments(self, reference_length=200, 
                         num_alignments = 2000, 
                         coverage = 100, 
@@ -105,3 +113,6 @@ class VariantCallingData(VariantCalling):
         alignment_idx = mutation_types.index(mutation_index)
         plt.title(f"Mutation type: {self.mutation_type_names[mutation_types[alignment_idx]]}")
         plt.imshow(alignments_ints[alignment_idx],cmap='jet')
+
+    def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
+        pass
