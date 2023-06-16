@@ -116,3 +116,9 @@ class VariantCallingData(VariantCalling):
 
     def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
         pass
+
+    # def ratio_gen(self,  ...) -> alignments, clone_prob
+    #     pass
+    
+    # @staticmethod
+    # def _add_errors(clone, p_sequencing_error, p_alignment_error) -> clone_array with errors 
