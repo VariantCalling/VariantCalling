@@ -120,7 +120,7 @@ class VariantCallingData(VariantCalling):
     def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
         pass
 
-    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error):
+    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> list,list:
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
 
@@ -134,6 +134,12 @@ class VariantCallingData(VariantCalling):
             Probability of sequencing error, takes value >= 0, <= 1
         p_alignment_error : <double>
             Probability of alignment error, takes value >= 0, <= 1 
+        Returns
+        -------
+        list
+            List of reads for an alignment
+        list
+            Probability distribution for the alignment read for each of the clone class
         """
         prob_dist = self._gen_prob_list(self.nb_clones)
         nb_coverage_list = []
@@ -157,7 +163,7 @@ class VariantCallingData(VariantCalling):
         return [coverage_list[i] for i in choice_indices], prob_dist
 
     @staticmethod
-    def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> np.ndarray:
+    def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
         """
         Adds sequencing error and alignment error to a single read, returns clone with error
         Parameters
@@ -168,6 +174,11 @@ class VariantCallingData(VariantCalling):
             Probability of sequencing error, takes value >= 0, <= 1
         p_alignment_error : <double>
             Probability of alignment error, takes value >= 0, <= 1
+        
+        Returns
+        -------
+        list
+            List of bp based on input clone with sequencing and alignment errors added
         """
         # Let's make alignment error applicable to all for now
         new_clone = [clone[i] if random.random() > p_alignment_error 
@@ -188,6 +199,6 @@ class VariantCallingData(VariantCalling):
         Returns
         -------
         list
-            Description
+            List of <nb_class> element representing the probability for each of the class.
         """
         return (np.random.dirichlet(np.ones(nb_class)*1000.,size=1)).flatten().tolist()
