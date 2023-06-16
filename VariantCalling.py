@@ -3,29 +3,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class VariantCalling:
-    def __init__(self, mutation_labels, mutation_types_names) -> None:
+    def __init__(self, mutation_labels, mutation_types_names, file_name) -> None:
         self.mutation_labels = mutation_labels
         self.mutation_type_names = mutation_types_names
         self.NUCLEOTIDES = "ACGT"
         self.transdict = {"A":0, "C": 1, "G":2, "T":3}
 
-class VariantCallingData(VariantCalling):
-    """Class for simulated data generation"""
-    def __init__(self, 
-                 mutation_labels={"no_SNP": 0, "heterozygous_SNP": 1, "homozygous_SNP": 2},
-                 mutation_types_names={0: "No mutation", 1: "Heterozygous SNP", 2: "Homozygous SNP"}
-                 ) -> None:
-        super().__init__(mutation_labels=mutation_labels, mutation_types_names=mutation_types_names)
-        self.alignments = None
-        self.mutation_types = None
-
         self.clones = []
-        with open("clones.txt", "r") as f:
+        with open(file_name, "r") as f:
             for clone in f:
                 alignment = []
                 for char in clone.strip():
                     alignment.append(char)
                 self.clones.append(alignment)
+
+class VariantCallingData(VariantCalling):
+    """Class for simulated data generation"""
+    def __init__(self, 
+                 mutation_labels={"no_SNP": 0, "heterozygous_SNP": 1, "homozygous_SNP": 2},
+                 mutation_types_names={0: "No mutation", 1: "Heterozygous SNP", 2: "Homozygous SNP"},
+                 file_name="clones.txt"
+                 ) -> None:
+        super().__init__(mutation_labels=mutation_labels, mutation_types_names=mutation_types_names,
+                         file_name=file_name)
+        self.alignments = None
+        self.mutation_types = None
                 
     def simulate_alignments(self, reference_length=200, 
                         num_alignments = 2000, 
