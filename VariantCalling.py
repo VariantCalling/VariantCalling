@@ -1,4 +1,5 @@
 import random
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,6 +17,7 @@ class VariantCalling:
                 for char in clone.strip():
                     alignment.append(char)
                 self.clones.append(alignment)
+        self.nb_clones = len(self.clones)
 
 class VariantCallingData(VariantCalling):
     """Class for simulated data generation"""
@@ -99,7 +101,6 @@ class VariantCallingData(VariantCalling):
             alignments = self.alignments
         return np.vectorize(self.transdict.get)(alignments)
     
-
     def plot_data(self, alignments_ints=None, mutation_types=None, mutation_index=0) -> None:
         """Use to plot an alignment at a certain mutation type
         
@@ -121,6 +122,40 @@ class VariantCallingData(VariantCalling):
 
     # def ratio_gen(self,  ...) -> alignments, clone_prob
     #     pass
-    
-    # @staticmethod
-    # def _add_errors(clone, p_sequencing_error, p_alignment_error) -> clone_array with errors 
+
+
+    @staticmethod
+    def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> np.ndarray:
+        """
+        Adds sequencing error and alignment error to a single read, returns clone with error
+        Parameters
+        ----------
+        clone : <List> 
+            List of the base-pair encoded in <int>
+        p_sequencing_error : <double>
+            Probability of sequencing error, takes value >= 0, <= 1
+        p_alignment_error : <double>
+            Probability of alignment error, takes value >= 0, <= 1
+        """
+        # Let's make alignment error applicable to all for now
+        new_clone = [clone[i] if random.random() > p_alignment_error 
+                     else clone[min(max(0, i + random.randint(-1,2)),len(clone)-1)] for i in range(len(clone))]
+        return [new_clone[i] if random.random()> p_sequencing_error
+                else random.choice(self.NUCLEOTIDES) for i in range(len(new_clone))]
+
+    def _gen_prob_list(self, nb_class) -> list:
+        """Generate a list of nb_class elements of probability that sum to 1
+        Leaving the nb_class to maintain modularity in case we need to generate 
+        probability for other purposes.
+        
+        Parameters
+        ----------
+        nb_classes : <int>
+            Number of classes of probability to be generated
+        
+        Returns
+        -------
+        list
+            Description
+        """
+        return (np.random.dirichlet(np.ones(nb_class)*1000.,size=1)).flatten().tolist()
