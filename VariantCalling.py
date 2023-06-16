@@ -120,9 +120,39 @@ class VariantCallingData(VariantCalling):
     def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
         pass
 
-    # def ratio_gen(self,  ...) -> alignments, clone_prob
-    #     pass
-
+    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error):
+        """Wrapper to generate a single alignment based on a randomly generated ratio
+        Returns np.ndarray of the alignment and the probability of the distribution
+        
+        Parameters
+        ----------
+        coverage : <int>
+            Number of read for an alignment
+        p_sequencing_error : <double>
+            Probability of sequencing error, takes value >= 0, <= 1
+        p_alignment_error : <double>
+            Probability of alignment error, takes value >= 0, <= 1 
+        """
+        prob_dist = self._gen_prob_list(self.nb_clones)
+        nb_coverage_list = []
+        for prob in prob_dist:
+            nb_coverage_list.append(math.floor(prob * coverage))
+        for _ in range(coverage - sum(nb_coverage_list)):
+            # We randomly increase an element by 1 until we reach the number of coverages specified
+            nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1
+        
+        # This will be the final probability list
+        prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
+        
+        coverage_list = []
+        for clone_idx, nb_clone_coverage in enumerate(nb_coverage_list):
+            for _ in range(0,nb_clone_coverage):
+                coverage_list.append(
+                    self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
+        
+        # Here we shuffle the list and concatenate into the final alignment
+        choice_indices = np.random.choice(len(coverage_list), coverage, replace=False)
+        return [coverage_list[i] for i in choice_indices]
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> np.ndarray:
