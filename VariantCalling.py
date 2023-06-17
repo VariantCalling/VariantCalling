@@ -117,10 +117,40 @@ class VariantCallingData(VariantCalling):
         plt.title(f"Mutation type: {self.mutation_type_names[mutation_types[alignment_idx]]}")
         plt.imshow(alignments_ints[alignment_idx],cmap='jet')
 
-    def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
-        pass
+    def simulate_clones(self, num_alignments = 2000, 
+                        coverage = 100, 
+                        p_sequencing_error=0.0,
+                        p_alignment_error=0.00) -> (np.ndarray, list) :
+        """Wrapper to generate n alignments as specified in num_alignments.
+        NOTE: Consider to merge this into simulate_alignments in the future.
+        
+        Parameters
+        ----------
+        num_alignments : <int>
+            Number of alignments to be generated
+        coverage : <int>
+            Number of read for an alignment
+        p_sequencing_error : <double>
+            Probability of sequencing error, takes value >= 0, <= 1
+        p_alignment_error : <double>
+            Probability of alignment error, takes value >= 0, <= 1 
+        Returns
+        -------
+        np.ndarray :
+            Numpy array of alignments generated.
+        list :
+            List of lists of probability for each of the alignment
+        """
+        alignments = []
+        prob_lists = []
+        for i in range(num_alignments):
+            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+            alignments.append(alignment)
+            prob_lists.append(prob_list)
+        self.alignments = alignments
+        return np.array(alignments), prob_lists
 
-    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error):
+    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
 
@@ -134,13 +164,20 @@ class VariantCallingData(VariantCalling):
             Probability of sequencing error, takes value >= 0, <= 1
         p_alignment_error : <double>
             Probability of alignment error, takes value >= 0, <= 1 
+        Returns
+        -------
+        list
+            List of reads for an alignment
+        list
+            Probability distribution for the alignment read for each of the clone class
         """
-        prob_dist = self._gen_prob_list(self.nb_clones)
+        prob_dist = self._gen_prob_list(self.nb_clones, mode=2)
         nb_coverage_list = []
         for prob in prob_dist:
             nb_coverage_list.append(math.floor(prob * coverage))
-        for _ in range(coverage - sum(nb_coverage_list)):
-            # We randomly increase an element by 1 until we reach the number of coverages specified
+        for _ in range(coverage - sum(nb_coverage_list) - 1):
+            # We randomly increase an element by 1 until we reach the number of coverages specified (n - 1)
+            # as the first row is always the reference
             nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1
         
         coverage_list = []
@@ -153,11 +190,14 @@ class VariantCallingData(VariantCalling):
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
 
         # Here we shuffle the list and concatenate into the final alignment
-        choice_indices = np.random.choice(len(coverage_list), coverage, replace=False)
-        return [coverage_list[i] for i in choice_indices], prob_dist
+        choice_indices = np.random.choice(len(coverage_list), coverage - 1, replace=False)
+        alignment = [self.clones[0]] # First row is always reference (assumed to be index at 0)
+        alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
+
+        return alignment, prob_dist
 
     @staticmethod
-    def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> np.ndarray:
+    def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
         """
         Adds sequencing error and alignment error to a single read, returns clone with error
         Parameters
@@ -168,6 +208,11 @@ class VariantCallingData(VariantCalling):
             Probability of sequencing error, takes value >= 0, <= 1
         p_alignment_error : <double>
             Probability of alignment error, takes value >= 0, <= 1
+        
+        Returns
+        -------
+        list
+            List of bp based on input clone with sequencing and alignment errors added
         """
         # Let's make alignment error applicable to all for now
         new_clone = [clone[i] if random.random() > p_alignment_error 
@@ -175,7 +220,7 @@ class VariantCallingData(VariantCalling):
         return [new_clone[i] if random.random()> p_sequencing_error
                 else random.choice(self.NUCLEOTIDES) for i in range(len(new_clone))]
 
-    def _gen_prob_list(self, nb_class) -> list:
+    def _gen_prob_list(self, nb_class, mode=1) -> list:
         """Generate a list of nb_class elements of probability that sum to 1
         Leaving the nb_class to maintain modularity in case we need to generate 
         probability for other purposes.
@@ -185,9 +230,18 @@ class VariantCallingData(VariantCalling):
         nb_classes : <int>
             Number of classes of probability to be generated
         
+        mode : <int>
+            Mode of the randomizer, it seems like the Dirichlet's Distribution outputs overly balanced distribution
+            1 : Dirichlet's Distribution - Seems to be quite balanced, often returns within mean of p=0.33
+            2 : random.random() - Generates nb_class random numbers that are normalized against the sum
         Returns
         -------
         list
-            Description
+            List of <nb_class> element representing the probability for each of the class.
         """
-        return (np.random.dirichlet(np.ones(nb_class)*1000.,size=1)).flatten().tolist()
+        match mode:
+            case 1: 
+                return (np.random.dirichlet(np.ones(nb_class)*1000.,size=1)).flatten().tolist()
+            case 2:
+                prob_list = [random.random() for _ in range(0,nb_class)]
+                return [prob_list[i] / sum(prob_list) for i in range(0, nb_class)]
