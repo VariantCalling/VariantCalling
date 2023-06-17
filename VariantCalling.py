@@ -117,8 +117,38 @@ class VariantCallingData(VariantCalling):
         plt.title(f"Mutation type: {self.mutation_type_names[mutation_types[alignment_idx]]}")
         plt.imshow(alignments_ints[alignment_idx],cmap='jet')
 
-    def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
-        pass
+    def simulate_clones(self, num_alignments = 2000, 
+                        coverage = 100, 
+                        p_sequencing_error=0.0,
+                        p_alignment_error=0.00) -> (np.ndarray, list) :
+        """Wrapper to generate n alignments as specified in num_alignments.
+        NOTE: Consider to merge this into simulate_alignments in the future.
+        
+        Parameters
+        ----------
+        num_alignments : <int>
+            Number of alignments to be generated
+        coverage : <int>
+            Number of read for an alignment
+        p_sequencing_error : <double>
+            Probability of sequencing error, takes value >= 0, <= 1
+        p_alignment_error : <double>
+            Probability of alignment error, takes value >= 0, <= 1 
+        Returns
+        -------
+        np.ndarray :
+            Numpy array of alignments generated.
+        list :
+            List of lists of probability for each of the alignment
+        """
+        alignments = []
+        prob_lists = []
+        for i in range(num_alignments):
+            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+            alignments.append(alignment)
+            prob_lists.append(prob_list)
+        self.alignments = alignments
+        return np.array(alignments), prob_lists
 
     def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
