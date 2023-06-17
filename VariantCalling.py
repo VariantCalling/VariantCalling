@@ -120,7 +120,7 @@ class VariantCallingData(VariantCalling):
     def simulate_clones(self, proportion: list, coverage=100, num_alignments=2000):
         pass
 
-    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> list,list:
+    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
 
@@ -141,12 +141,13 @@ class VariantCallingData(VariantCalling):
         list
             Probability distribution for the alignment read for each of the clone class
         """
-        prob_dist = self._gen_prob_list(self.nb_clones)
+        prob_dist = self._gen_prob_list(self.nb_clones, mode=2)
         nb_coverage_list = []
         for prob in prob_dist:
             nb_coverage_list.append(math.floor(prob * coverage))
-        for _ in range(coverage - sum(nb_coverage_list)):
-            # We randomly increase an element by 1 until we reach the number of coverages specified
+        for _ in range(coverage - sum(nb_coverage_list) - 1):
+            # We randomly increase an element by 1 until we reach the number of coverages specified (n - 1)
+            # as the first row is always the reference
             nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1
         
         coverage_list = []
@@ -159,8 +160,11 @@ class VariantCallingData(VariantCalling):
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
 
         # Here we shuffle the list and concatenate into the final alignment
-        choice_indices = np.random.choice(len(coverage_list), coverage, replace=False)
-        return [coverage_list[i] for i in choice_indices], prob_dist
+        choice_indices = np.random.choice(len(coverage_list), coverage - 1, replace=False)
+        alignment = [self.clones[0]] # First row is always reference (assumed to be index at 0)
+        alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
+
+        return alignment, prob_dist
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
