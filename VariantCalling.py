@@ -186,7 +186,7 @@ class VariantCallingData(VariantCalling):
         return [new_clone[i] if random.random()> p_sequencing_error
                 else random.choice(self.NUCLEOTIDES) for i in range(len(new_clone))]
 
-    def _gen_prob_list(self, nb_class) -> list:
+    def _gen_prob_list(self, nb_class, mode=1) -> list:
         """Generate a list of nb_class elements of probability that sum to 1
         Leaving the nb_class to maintain modularity in case we need to generate 
         probability for other purposes.
@@ -196,9 +196,18 @@ class VariantCallingData(VariantCalling):
         nb_classes : <int>
             Number of classes of probability to be generated
         
+        mode : <int>
+            Mode of the randomizer, it seems like the Dirichlet's Distribution outputs overly balanced distribution
+            1 : Dirichlet's Distribution - Seems to be quite balanced, often returns within mean of p=0.33
+            2 : random.random() - Generates nb_class random numbers that are normalized against the sum
         Returns
         -------
         list
             List of <nb_class> element representing the probability for each of the class.
         """
-        return (np.random.dirichlet(np.ones(nb_class)*1000.,size=1)).flatten().tolist()
+        match mode:
+            case 1: 
+                return (np.random.dirichlet(np.ones(nb_class)*1000.,size=1)).flatten().tolist()
+            case 2:
+                prob_list = [random.random() for _ in range(0,nb_class)]
+                return [prob_list[i] / sum(prob_list) for i in range(0, nb_class)]
