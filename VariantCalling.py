@@ -175,7 +175,7 @@ class VariantCallingData(VariantCalling):
         nb_coverage_list = []
         for prob in prob_dist:
             nb_coverage_list.append(math.floor(prob * coverage))
-        for _ in range(coverage - sum(nb_coverage_list) - 1):
+        for _ in range(coverage - sum(nb_coverage_list)):
             # We randomly increase an element by 1 until we reach the number of coverages specified (n - 1)
             # as the first row is always the reference
             nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1
@@ -190,7 +190,7 @@ class VariantCallingData(VariantCalling):
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
 
         # Here we shuffle the list and concatenate into the final alignment
-        choice_indices = np.random.choice(len(coverage_list), coverage - 1, replace=False)
+        choice_indices = np.random.choice(len(coverage_list), coverage, replace=False)
         alignment = [self.clones[0]] # First row is always reference (assumed to be index at 0)
         alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
 
