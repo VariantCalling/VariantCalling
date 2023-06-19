@@ -120,7 +120,8 @@ class VariantCallingData(VariantCalling):
     def simulate_clones(self, num_alignments = 2000, 
                         coverage = 100, 
                         p_sequencing_error=0.0,
-                        p_alignment_error=0.00) -> (np.ndarray, list) :
+                        p_alignment_error=0.00,
+                        verbose=1) -> (np.ndarray, list) :
         """Wrapper to generate n alignments as specified in num_alignments.
         NOTE: Consider to merge this into simulate_alignments in the future.
         
@@ -134,6 +135,9 @@ class VariantCallingData(VariantCalling):
             Probability of sequencing error, takes value >= 0, <= 1
         p_alignment_error : <double>
             Probability of alignment error, takes value >= 0, <= 1 
+        verbose : <int>
+            0 - No progress will be printed
+            1 - Progress will be printed for every 400 num_alignments
         Returns
         -------
         np.ndarray :
@@ -144,6 +148,8 @@ class VariantCallingData(VariantCalling):
         alignments = []
         prob_lists = []
         for i in range(num_alignments):
+            if (i % 400 == 0) and (verbose==1):
+                print("Progress:  {progress_percentage}%% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))
             alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
