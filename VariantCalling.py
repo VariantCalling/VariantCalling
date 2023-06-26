@@ -148,9 +148,8 @@ class VariantCallingData(VariantCalling):
         alignments = []
         prob_lists = []
         for i in range(num_alignments):
-            if (i % 400 == 0) and (verbose==1):
-                print("Progress:  {progress_percentage}%% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))
-            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+            if (i % int(num_alignments/20) == 0) and (verbose==1):
++                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
         self.alignments = alignments
