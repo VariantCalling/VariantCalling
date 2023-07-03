@@ -18,6 +18,7 @@ class VariantCalling:
                     alignment.append(char)
                 self.clones.append(alignment)
         self.nb_clones = len(self.clones)
+        self.clones_int = self.char_to_int(self.clones)
 
 class VariantCallingData(VariantCalling):
     """Class for simulated data generation"""
@@ -149,7 +150,8 @@ class VariantCallingData(VariantCalling):
         prob_lists = []
         for i in range(num_alignments):
             if (i % int(num_alignments/20) == 0) and (verbose==1):
-+                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            
+            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
         self.alignments = alignments
@@ -275,4 +277,44 @@ class VariantCallingData(VariantCalling):
         ref_gen_matrix = np.tile(ref_gen,(coverage,1))
         aln_ref_dim = np.array((arr, ref_gen_matrix))
         return aln_ref_dim
+
+    def _array_dup_all(self,arr,coverage) -> np.ndarray:
+        """Wrapper to call _array_dup_clone to generate channels for different clones, basically instead of only 1 channel, this wrapper 
+        loops and generates additional channels for all the clones considered.
+        
+        Parameters
+        ----------
+        arr : TYPE
+            Description
+        coverage : TYPE
+            Description
+        """
+
+        # For each clones in the clones.txt file, we create a separate channel for it
+        arr_channel = np.array([arr])
+        for clone in self.clones:
+            arr_channel = self._array_dup_clone(clone,arr_channel,coverage)
+        return arr_channel
+
+    def _array_dup_clone(self,clone,arr,coverage) -> np.ndarray: 
+        """Produces an array of the reference genome repeated, mc for multiple channel, this is built on top of Will's code and supposed to work
+        better as it should work for more than one. The input parameter has been changed to specific alignment row.
+        
+        Parameters
+        ----------
+        clone : List
+            Row of clone to be duplicate as a separate channel
+        arr : List
+            Input alignment data
+        coverage : Int
+            Size of the amplicon
+        
+        Returns
+        -------
+        np.ndarray
+            2-dimensional array with second channel as the reference row
+        """
+        clone_gen_matrix = np.array([np.tile(clone,(coverage,1))])
+        aln_clone_dim = np.concatenate((arr,clone_gen_matrix))
+        return aln_clone_dim
 
