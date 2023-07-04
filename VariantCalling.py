@@ -122,7 +122,8 @@ class VariantCallingData(VariantCalling):
                         coverage = 100, 
                         p_sequencing_error=0.0,
                         p_alignment_error=0.00,
-                        verbose=1) -> (np.ndarray, list) :
+                        verbose=1,
+                        gen_noiseless=False) -> (np.ndarray, list) :
         """Wrapper to generate n alignments as specified in num_alignments.
         NOTE: Consider to merge this into simulate_alignments in the future.
         
@@ -147,17 +148,24 @@ class VariantCallingData(VariantCalling):
             List of lists of probability for each of the alignment
         """
         alignments = []
+        alignments_noiseless = []
         prob_lists = []
         for i in range(num_alignments):
             if (i % int(num_alignments/20) == 0) and (verbose==1):
                 print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            
-            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+            alignment, prob_list, alignment_noiseless = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error,gen_noiseless)
             alignments.append(alignment)
             prob_lists.append(prob_list)
+            alignments_noiseless.append(alignment_noiseless)
         self.alignments = alignments
-        return np.array(alignments), prob_lists
 
-    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> (list,list):
+        # Here we check if gen_noiselss is True, if not we will only return 2 variables to maintain compatibility
+        if gen_noiseless:
+            return np.array(alignments), prob_lists, np.array(alignments_noiseless)
+        else:
+            return np.array(alignments), prob_lists
+
+    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error, gen_noiseless=False) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
 
@@ -178,6 +186,9 @@ class VariantCallingData(VariantCalling):
         list
             Probability distribution for the alignment read for each of the clone class
         """
+        alignment = []
+        alignment_noiseless = []
+
         prob_dist = self._gen_prob_list(self.nb_clones, mode=2)
         nb_coverage_list = []
         for prob in prob_dist:
@@ -188,10 +199,15 @@ class VariantCallingData(VariantCalling):
             nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1
         
         coverage_list = []
+        coverage_list_noiseless = []
         for clone_idx, nb_clone_coverage in enumerate(nb_coverage_list):
             for _ in range(0,nb_clone_coverage):
                 coverage_list.append(
                     self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
+                
+                if gen_noiseless:
+                    # Here we append the list without noise added, only run this if specified
+                    coverage_list_noiseless.append(self.clones[clone_idx])
         
         # This will be the final probability list
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
@@ -201,7 +217,12 @@ class VariantCallingData(VariantCalling):
         alignment = [self.clones[0]] # First row is always reference (assumed to be index at 0)
         alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
 
-        return alignment, prob_dist
+        if gen_noiseless:
+            alignment_noiseless = [self.clones[0]]
+            alignment_noiseless += [coverage_list_noiseless[i] for i in choice_indices]
+            print("Appending alignment_noiseless. Length of alignment_noiseless: " + str(len(alignment_noiseless)))
+        
+        return alignment, prob_dist, alignment_noiseless
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
