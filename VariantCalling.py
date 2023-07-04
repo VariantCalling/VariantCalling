@@ -220,7 +220,6 @@ class VariantCallingData(VariantCalling):
         if gen_noiseless:
             alignment_noiseless = [self.clones[0]]
             alignment_noiseless += [coverage_list_noiseless[i] for i in choice_indices]
-            print("Appending alignment_noiseless. Length of alignment_noiseless: " + str(len(alignment_noiseless)))
         
         return alignment, prob_dist, alignment_noiseless
 
