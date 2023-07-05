@@ -118,44 +118,38 @@ class VariantCallingData(VariantCalling):
         plt.title(f"Mutation type: {self.mutation_type_names[mutation_types[alignment_idx]]}")
         plt.imshow(alignments_ints[alignment_idx],cmap='jet')
 
-    def simulate_clones(self, num_alignments = 2000, 
-                        coverage = 100, 
-                        p_sequencing_error=0.0,
-                        p_alignment_error=0.00,
-                        verbose=1) -> (np.ndarray, list) :
-        """Wrapper to generate n alignments as specified in num_alignments.
-        NOTE: Consider to merge this into simulate_alignments in the future.
-        
-        Parameters
-        ----------
-        num_alignments : <int>
-            Number of alignments to be generated
-        coverage : <int>
-            Number of read for an alignment
-        p_sequencing_error : <double>
-            Probability of sequencing error, takes value >= 0, <= 1
-        p_alignment_error : <double>
-            Probability of alignment error, takes value >= 0, <= 1 
-        verbose : <int>
-            0 - No progress will be printed
-            1 - Progress will be printed for every 400 num_alignments
-        Returns
-        -------
-        np.ndarray :
-            Numpy array of alignments generated.
-        list :
-            List of lists of probability for each of the alignment
+    def simulate_clones(self, num_alignments=2000, coverage=100, p_sequencing_error_range=(0.0, 0.1), p_alignment_error_range=(0.0, 0.1), verbose=1):
+        """
+        Wrapper to generate n alignments as specified in num_alignments with random error rates.
+        Parameters:
+        - num_alignments: Number of alignments to be generated.
+        - coverage: Number of reads for an alignment.
+        - p_sequencing_error_range: Range of sequencing error rates (tuple of two values).
+        - p_alignment_error_range: Range of alignment error rates (tuple of two values).
+        - verbose: Verbosity level (0 or 1).
+        Returns:
+        - alignments: Numpy array of alignments generated.
+        - prob_lists: List of lists of probability for each alignment.
         """
         alignments = []
         prob_lists = []
+
         for i in range(num_alignments):
-            if (i % int(num_alignments/20) == 0) and (verbose==1):
-                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            
+            if (i % 400 == 0) and (verbose == 1):
+                print("Progress: {progress_percentage}%% completed. Computing alignment {current_iter} of {total_iter}".format(
+                    progress_percentage=round(i*100/num_alignments, 2), current_iter=i, total_iter=num_alignments
+                ))
+            
+            p_sequencing_error = random.uniform(*p_sequencing_error_range)
+            p_alignment_error = random.uniform(*p_alignment_error_range)
+
             alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
+
         self.alignments = alignments
         return np.array(alignments), prob_lists
+    
 
     def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
@@ -204,28 +198,24 @@ class VariantCallingData(VariantCalling):
         return alignment, prob_dist
 
     @staticmethod
-    def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
+    def _add_errors(clone, error_rate):
         """
-        Adds sequencing error and alignment error to a single read, returns clone with error
-        Parameters
-        ----------
-        clone : <List> 
-            List of the base-pair encoded in <int>
-        p_sequencing_error : <double>
-            Probability of sequencing error, takes value >= 0, <= 1
-        p_alignment_error : <double>
-            Probability of alignment error, takes value >= 0, <= 1
-        
-        Returns
-        -------
-        list
-            List of bp based on input clone with sequencing and alignment errors added
+        Adds sequencing error and alignment error to a single read based on the given error rate.
+        Parameters:
+        - clone: List of base pairs.
+        - error_rate: Rate of introducing errors (float between 0 and 1).
+        Returns:
+        - clone with errors.
         """
-        # Let's make alignment error applicable to all for now
-        new_clone = [clone[i] if random.random() > p_alignment_error 
-                     else clone[min(max(0, i + random.randint(-1,2)),len(clone)-1)] for i in range(len(clone))]
-        return [new_clone[i] if random.random()> p_sequencing_error
-                else random.choice(self.NUCLEOTIDES) for i in range(len(new_clone))]
+        error_clone = []
+        for base in clone:
+            if random.random() < error_rate:
+                error_clone.append(random.choice("ACGT"))
+            else:
+                error_clone.append(base)
+        return error_clone
+    
+
 
     def _gen_prob_list(self, nb_class, mode=1) -> list:
         """Generate a list of nb_class elements of probability that sum to 1
