@@ -3,6 +3,11 @@ import subprocess
 import re
 import pickle
 from datetime import datetime
+import os
+
+for dir in ['./data/fastqq', './data/log', './data/pickle', './data/output']:
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
 cigar_num_pattern = r"\d+"
 cigar_alpha_pattern = r"[A-Z]"

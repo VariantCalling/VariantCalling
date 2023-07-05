@@ -164,8 +164,9 @@ cython_debug/
 #.idea/
 
 data/log/**
-_log
 data/output/**
 data/fastq/**
+data/pickle/**
+_log
 *.pkl
 *.fastq
