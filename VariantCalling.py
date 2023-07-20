@@ -318,7 +318,7 @@ class VariantCallingData(VariantCalling):
         aln_clone_dim = np.concatenate((arr,clone_gen_matrix))
         return aln_clone_dim
 
-    def _array_binary_mask(self,arr,coverage) -> np.ndarray:
+    def _array_binary_mask(self,arr,coverage,ref_mat=False) -> np.ndarray:
         """Generates binary masks based on whether the base pair is the same as the reference sequence
         (0: False   1: True)
         
@@ -327,14 +327,23 @@ class VariantCallingData(VariantCalling):
         arr : <List>
             2D input list of the input array with the first row containing the reference sequence
         coverage : <int>
+            Size of the coverage for the input array, we should be able to identify the size from arr 
+            but seems to be broken right now, may need to be fixed in the future.
+        ref_mat : bool, optional
+            Boolean option to either add the reference matrix into the return array
+        
+        Returns
+        -------
+        np.ndarray
             Description
         """
         # Here we are transcoding the True to A as it's the highest value
-        binary_transdict = {True:"T", False:"A"}
+        binary_transdict = {True:"A", False:"T"}
         ref_gen = arr[0]
         #binary_mask_matrix = [np.in1d(arr[i],ref_gen).tolist() for i in range(0,len(arr))]
         binary_mask_matrix = [[arr[j][i]==ref_gen[i] for i in range(0,len(arr[j]))] for j in range(0,len(arr))]
-        print(binary_mask_matrix)
         binary_mask_matrix = np.vectorize(binary_transdict.get)(binary_mask_matrix)
-        aln_binary_mask_dim = np.array((arr, binary_mask_matrix))
-        return aln_binary_mask_dim
+        if ref_mat:
+            return np.array((arr, binary_mask_matrix, np.tile(ref_gen,(coverage,1))))
+        else:
+            return np.array((arr, binary_mask_matrix))
