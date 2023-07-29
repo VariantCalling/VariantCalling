@@ -335,7 +335,7 @@ class VariantCallingData(VariantCalling):
         Returns
         -------
         np.ndarray
-            Description
+            Np array of multi-channel depends on the nature
         """
         # Here we are transcoding the True to A as it's the highest value
         binary_transdict = {True:"A", False:"T"}
@@ -347,3 +347,41 @@ class VariantCallingData(VariantCalling):
             return np.array((arr, binary_mask_matrix, np.tile(ref_gen,(coverage,1))))
         else:
             return np.array((arr, binary_mask_matrix))
+
+    def _array_constituent_bp(self,arr,coverage, binary_map=False) -> np.ndarray:
+        """Generates binary masks based on whether the base pair is the same as the reference sequence
+        (0: False   1: True)
+        
+        Parameters
+        ----------
+        arr : <List>
+            2D input list of the input array with the first row containing the reference sequence
+        coverage : <int>
+            Size of the coverage for the input array, we should be able to identify the size from arr 
+            but seems to be broken right now, may need to be fixed in the future.
+        binary_map : bool, optional
+            Boolean to either include the binary map
+        
+        Returns
+        -------
+        np.ndarray
+            Description
+        
+        Deleted Parameters
+        ------------------
+        ref_mat : bool, optional
+            Boolean option to either add the reference matrix into the return array
+        """
+        binary_transdict = {True:"T", False:"A"}
+        matrix_A = np.vectorize(binary_transdict.get)([[True if arr[j][i] == "A" else False for i in range(0,len(arr[j]))] for j in range(0,len(arr))])
+        matrix_T = np.vectorize(binary_transdict.get)([[True if arr[j][i] == "T" else False for i in range(0,len(arr[j]))] for j in range(0,len(arr))])
+        matrix_C = np.vectorize(binary_transdict.get)([[True if arr[j][i] == "C" else False for i in range(0,len(arr[j]))] for j in range(0,len(arr))])
+        matrix_G = np.vectorize(binary_transdict.get)([[True if arr[j][i] == "G" else False for i in range(0,len(arr[j]))] for j in range(0,len(arr))])
+
+        if binary_map:
+            ref_gen = arr[0]
+            #binary_mask_matrix = [np.in1d(arr[i],ref_gen).tolist() for i in range(0,len(arr))]
+            binary_mask_matrix = [[arr[j][i]==ref_gen[i] for i in range(0,len(arr[j]))] for j in range(0,len(arr))]
+            return np.array((matrix_A, matrix_T, matrix_C, matrix_G, np.vectorize(binary_transdict.get)(binary_mask_matrix)))
+        else:
+            return np.array((matrix_A, matrix_T, matrix_C, matrix_G))
