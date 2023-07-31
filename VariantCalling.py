@@ -167,31 +167,6 @@ class VariantCallingData(VariantCalling):
         self.alignments = alignments
         return np.array(alignments), prob_lists
 
-    def pickle_clones(self, num_alignments = 2000, 
-                        coverage = 100,
-                        verbose=1) -> (np.ndarray, list):
-        """Wrapper to generate alignments based on the pickle arrays
-        
-        Parameters
-        ----------
-        num_alignments : int, optional
-            Description
-        coverage : int, optional
-            Description
-        verbose : int, optional
-            Description
-        """
-
-        alignments = []
-        prob_lists = []
-        for i in range(num_alignments):
-            if (i % int(num_alignments/20) == 0) and (verbose==1):
-                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            
-            alignment, prob_list = self.ratio_gen(coverage)
-            alignments.append(alignment)
-            prob_lists.append(prob_list)
-        self.alignments = alignments
-
     def ratio_gen(self, coverage, p_sequencing_error=0, p_alignment_error=0) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
@@ -218,7 +193,6 @@ class VariantCallingData(VariantCalling):
             Probability distribution for the alignment read for each of the clone class
         """
         prob_dist = self._gen_prob_list(self.nb_clones, mode=2)
-        print(prob_dist)
         nb_coverage_list = []
         for prob in prob_dist:
             nb_coverage_list.append(math.floor(prob * coverage))
@@ -235,7 +209,7 @@ class VariantCallingData(VariantCalling):
                         coverage_list.append(
                         self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
                     case 2: # Load from pickle
-                        coverage_list.append(list(self.pkl_alignment_list[clone_idx][self._gen_rand_nb(len(self.pkl_alignment_list[clone_idx]))]))
+                        coverage_list.append(list(self.pkl_alignment_list[clone_idx][self._gen_rand_nb(len(self.pkl_alignment_list[clone_idx])-1)]))
         # This will be the final probability list
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
 
@@ -377,7 +351,6 @@ class VariantCallingData(VariantCalling):
         ref_gen = arr[0]
         #binary_mask_matrix = [np.in1d(arr[i],ref_gen).tolist() for i in range(0,len(arr))]
         binary_mask_matrix = [[arr[j][i]==ref_gen[i] for i in range(0,len(arr[j]))] for j in range(0,len(arr))]
-        print(binary_mask_matrix)
         binary_mask_matrix = np.vectorize(binary_transdict.get)(binary_mask_matrix)
         aln_binary_mask_dim = np.array((arr, binary_mask_matrix))
         return aln_binary_mask_dim
