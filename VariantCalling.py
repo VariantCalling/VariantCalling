@@ -2,14 +2,18 @@ import random
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import PickleUtil as PU
 
 class VariantCalling:
-    def __init__(self, mutation_labels, mutation_types_names, file_name) -> None:
+    def __init__(self, mutation_labels, mutation_types_names, file_name, gen_mode, pkl_sequence, pkl_clones) -> None:
         self.mutation_labels = mutation_labels
         self.mutation_type_names = mutation_types_names
         self.NUCLEOTIDES = "ACGT"
         self.transdict = {"A":0, "C": 1, "G":2, "T":3}
-
+        self.pkl_sequence = pkl_sequence
+        self.pkl_clones = pkl_clones
+        self.pkl_alignment_list = [] # This is the variable that holds the real-world data converted
+        self.gen_mode = gen_mode # We define the mode of generation, with 1: Sim, 2: Pickle, we default to 1 to maintain conpatibility
         self.clones = []
         with open(file_name, "r") as f:
             for clone in f:
@@ -19,16 +23,22 @@ class VariantCalling:
                 self.clones.append(alignment)
         self.nb_clones = len(self.clones)
         self.clones_int = self.char_to_int(self.clones)
+        if self.gen_mode == 2: # We only load the pickle if necessary
+            self._load_pickle()
+            self.nb_clones = len(self.pkl_clones)
 
 class VariantCallingData(VariantCalling):
     """Class for simulated data generation"""
     def __init__(self, 
                  mutation_labels={"no_SNP": 0, "heterozygous_SNP": 1, "homozygous_SNP": 2},
                  mutation_types_names={0: "No mutation", 1: "Heterozygous SNP", 2: "Homozygous SNP"},
-                 file_name="clones.txt"
+                 file_name="clones.txt",
+                 gen_mode=1,
+                 pkl_sequence="CRT",
+                 pkl_clones=["3D7"]
                  ) -> None:
         super().__init__(mutation_labels=mutation_labels, mutation_types_names=mutation_types_names,
-                         file_name=file_name)
+                         file_name=file_name,gen_mode=gen_mode,pkl_sequence=pkl_sequence,pkl_clones=pkl_clones)
         self.alignments = None
         self.mutation_types = None
                 
@@ -157,23 +167,27 @@ class VariantCallingData(VariantCalling):
         self.alignments = alignments
         return np.array(alignments), prob_lists
 
-    def ratio_gen(self, coverage, p_sequencing_error, p_alignment_error) -> (list,list):
+    def ratio_gen(self, coverage, p_sequencing_error=0, p_alignment_error=0) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
-
+        
         NOTE: Naming of variables shall be improved in the future for easy readability
         
         Parameters
         ----------
         coverage : <int>
             Number of read for an alignment
-        p_sequencing_error : <double>
+        p_sequencing_error : <double>, optional
             Probability of sequencing error, takes value >= 0, <= 1
-        p_alignment_error : <double>
+        p_alignment_error : <double>, optinal
             Probability of alignment error, takes value >= 0, <= 1 
+        gen_mode : int, optional
+            Mode 1: Simulation
+            Mode 2: Pickle
+        
         Returns
         -------
-        list
+        list, list
             List of reads for an alignment
         list
             Probability distribution for the alignment read for each of the clone class
@@ -185,14 +199,17 @@ class VariantCallingData(VariantCalling):
         for _ in range(coverage - sum(nb_coverage_list)):
             # We randomly increase an element by 1 until we reach the number of coverages specified (n - 1)
             # as the first row is always the reference
-            nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1
+            nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1        
         
         coverage_list = []
         for clone_idx, nb_clone_coverage in enumerate(nb_coverage_list):
             for _ in range(0,nb_clone_coverage):
-                coverage_list.append(
-                    self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
-        
+                match self.gen_mode:
+                    case 1: # Simulation
+                        coverage_list.append(
+                        self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
+                    case 2: # Load from pickle
+                        coverage_list.append(list(self.pkl_alignment_list[clone_idx][self._gen_rand_nb(len(self.pkl_alignment_list[clone_idx])-1)]))
         # This will be the final probability list
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
 
@@ -343,6 +360,7 @@ class VariantCallingData(VariantCalling):
         #binary_mask_matrix = [np.in1d(arr[i],ref_gen).tolist() for i in range(0,len(arr))]
         binary_mask_matrix = [[arr[j][i]==ref_gen[i] for i in range(0,len(arr[j]))] for j in range(0,len(arr))]
         binary_mask_matrix = np.vectorize(binary_transdict.get)(binary_mask_matrix)
+
         if ref_mat:
             return np.array((arr, binary_mask_matrix, np.tile(ref_gen,(coverage,1))))
         else:
@@ -385,3 +403,30 @@ class VariantCallingData(VariantCalling):
             return np.array((matrix_A, matrix_T, matrix_C, matrix_G, np.vectorize(binary_transdict.get)(binary_mask_matrix)))
         else:
             return np.array((matrix_A, matrix_T, matrix_C, matrix_G))
+
+        aln_binary_mask_dim = np.array((arr, binary_mask_matrix))
+        return aln_binary_mask_dim
+
+    def _load_pickle(self) -> None:
+        """Static method to load pickle files
+        """
+        pickleloader = PU.PickleLoader(sequence=self.pkl_sequence, clones=self.pkl_clones)
+        self.pkl_alignment_list = pickleloader.load_pickle()
+
+    def _gen_rand_nb(self, u_bound, l_bound=0) -> int:
+        """Generate a random integer from 0 to limit
+        
+        Parameters
+        ----------
+        u_bound : int
+            Upper bound of range
+        l_bound : int, optional
+            Lower bound, default to 0
+        
+        Returns
+        -------
+        int
+            Description
+        """
+        return random.randint(0,u_bound)
+
