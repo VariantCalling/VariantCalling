@@ -2,6 +2,8 @@ import random
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+from tqdm.notebook import tqdm
 import PickleUtil as PU
 
 class VariantCalling:
@@ -160,11 +162,12 @@ class VariantCallingData(VariantCalling):
         prob_lists = []
         for i in range(num_alignments):
             if (i % int(num_alignments/20) == 0) and (verbose==1):
-                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments))            
+                print("Progress:  {progress_percentage}% completed. \tComputing alignment {current_iter} of {total_iter}".format(progress_percentage=round(i*100/num_alignments,2), current_iter = i, total_iter=num_alignments), end="\r")
             alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
         self.alignments = alignments
+        print(f"Done, Number of alignments: {num_alignments}")
         return np.array(alignments), prob_lists
 
     def ratio_gen(self, coverage, p_sequencing_error=0, p_alignment_error=0) -> (list,list):
@@ -212,6 +215,7 @@ class VariantCallingData(VariantCalling):
                         self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
                     case 2: # Load from pickle
                         coverage_list.append(list(self.pkl_alignment_list[clone_idx][self._gen_rand_nb(len(self.pkl_alignment_list[clone_idx])-1)]))
+
         # This will be the final probability list
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
 
@@ -409,6 +413,58 @@ class VariantCallingData(VariantCalling):
         aln_binary_mask_dim = np.array((arr, binary_mask_matrix))
         return aln_binary_mask_dim
 
+    def _simulate_read(self, clone_type_index: int, alignment_error_prob: float, sequencing_error_prob: float):
+        sim_read = []
+        copied_clone = list(self.clones[clone_type_index])  # This is so that run-time is o(n) not o(2n)
+        pointer = 0
+        second_alignment_error_prob = alignment_error_prob / 5  # guess work right here
+        third_alignment_error_prob = alignment_error_prob /  8  # guess work right here
+        forth_alignment_error_prob = alignment_error_prob /  15  # guess work right here
+        while len(sim_read) < len(self.clones[clone_type_index]):
+            alignment = random.uniform(0, 1)
+            direction = random.choice([1, -1])
+            if alignment <=  forth_alignment_error_prob:
+                pointer += direction * 4
+            elif alignment <= third_alignment_error_prob:
+                pointer += direction * 3
+            elif alignment <= second_alignment_error_prob:
+                pointer += direction * 2
+            elif alignment <=  alignment_error_prob:
+                pointer += direction
+            
+            if pointer < 0 or pointer >= len(self.clones[clone_type_index]):
+                sim_read.append(random.choice(['A', 'C', 'G', 'T']))
+            else:
+                sequencing = random.uniform(0,1)
+                if sequencing < sequencing_error_prob:
+                    current = copied_clone[pointer]
+                    choice_array = ['A', 'C', 'G', 'T']
+                    choice_array.remove(current)
+                    copied_clone[pointer] = random.choice(choice_array)
+
+                sim_read.append(copied_clone[pointer])
+
+            pointer += 1
+        return self.char_to_int(sim_read)
+
+    def generate_data_for_noise_reduction(self, sample_size=1000, image_height=100, alignment_error_prob=0.05, sequencing_error_prob=0.05):
+        """Function which returns noisy and non-noisy data"""
+
+        noisy_images = []
+        clean_images = []
+
+        for _ in tqdm(range(sample_size)):
+            noisy = []
+            clean = []
+            random_array = np.random.randint(len(self.clones), size=image_height)
+            for clone_type in random_array:
+                noisy.append(self._simulate_read(clone_type, alignment_error_prob, sequencing_error_prob))
+                clean.append(self.char_to_int(list(self.clones[clone_type])))
+            noisy_images.append(noisy)
+            clean_images.append(clean)
+
+        return np.array(noisy_images), np.array(clean_images)
+
     def _load_pickle(self) -> None:
         """Static method to load pickle files
         """
@@ -431,4 +487,3 @@ class VariantCallingData(VariantCalling):
             Description
         """
         return random.randint(0,u_bound)
-
