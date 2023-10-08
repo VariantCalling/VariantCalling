@@ -3,6 +3,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import random
 from tqdm.notebook import tqdm
 import PickleUtil as PU
 
@@ -224,6 +225,29 @@ class VariantCallingData(VariantCalling):
         alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
 
         return alignment, prob_list
+
+    def comporator_dat_gen(self, num_sequences = 2000,
+                        verbose=1) -> (np.ndarray, list) :
+
+        # For each sequence, we generate whether it is match
+        alignments = []
+        ref_alignments = []
+        labels = []
+        for _ in tqdm(range(num_sequences)):
+            label = self._gen_rand_nb(1)
+            ref_indx = self._gen_rand_nb(len(self.pkl_alignment_list)-1)
+            ref_alignment = self.char_to_int(self.clones[ref_indx])
+            if label:
+                # If it's matching, we pull from the right silo
+                alignment = self.char_to_int(list(self.pkl_alignment_list[ref_indx][self._gen_rand_nb(len(self.pkl_alignment_list[ref_indx])-1)]))
+            else:
+                # If it is not a match, randomly pull from the other siloes
+                not_ref_idx = self._gen_rand_exc(ref_indx,len(self.pkl_alignment_list)-1)
+                alignment = self.char_to_int(list(self.pkl_alignment_list[not_ref_idx][self._gen_rand_nb(len(self.pkl_alignment_list[not_ref_idx])-1)]))
+            alignments.append(alignment)
+            ref_alignments.append(ref_alignment)
+            labels.append(label)
+        return np.array(alignments), np.array(ref_alignments), labels
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
@@ -486,3 +510,22 @@ class VariantCallingData(VariantCalling):
             Description
         """
         return random.randint(0,u_bound)
+
+    def _gen_rand_exc(self, exc, u_bound, l_bound=0) -> int:
+        """Generate a random integer by specifying an excluded number
+        Will run recursively if runs into the exc value
+        
+        Parameters
+        ----------
+        exc : int
+            Value to be excluded
+        u_bound : int
+            Upper bound of the gen range
+        l_bound : int, optional
+            Lower bound of the gen range, default to 0
+        """
+        gen_nb = self._gen_rand_nb(u_bound)
+        while gen_nb == exc:
+            gen_nb = self._gen_rand_nb(u_bound)
+        return gen_nb
+
