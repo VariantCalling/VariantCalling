@@ -226,28 +226,79 @@ class VariantCallingData(VariantCalling):
 
         return alignment, prob_list
 
-    def comporator_dat_gen(self, num_sequences = 2000,
-                        verbose=1) -> (np.ndarray, list) :
-
-        # For each sequence, we generate whether it is match
+    def comparator_dat_gen(self, num_sequences = 2000, mode=0) -> (np.ndarray, list) :
+        """
+        Adds sequencing error and alignment error to a single read, returns clone with error
+        Parameters
+        ----------
+        num_sequences : <int> 
+            Total number of sequences
+        mode : <int>
+            Generator mode
+                0 - Generate from pickle
+                1 - Generate from reference sequence
+        
+        Returns
+        -------
+        list
+            List of bp based on input clone with sequencing and alignment errors added
+        """
         alignments = []
         ref_alignments = []
         labels = []
         for _ in tqdm(range(num_sequences)):
             label = self._gen_rand_nb(1)
             ref_indx = self._gen_rand_nb(len(self.pkl_alignment_list)-1)
-            ref_alignment = self.char_to_int(self.clones[ref_indx])
+            ref_alignment = list(self.char_to_int(self.clones[ref_indx]))
             if label:
                 # If it's matching, we pull from the right silo
-                alignment = self.char_to_int(list(self.pkl_alignment_list[ref_indx][self._gen_rand_nb(len(self.pkl_alignment_list[ref_indx])-1)]))
+                match mode:
+                    case 0:
+                        alignment = list(self.char_to_int(list(self.pkl_alignment_list[ref_indx][self._gen_rand_nb(len(self.pkl_alignment_list[ref_indx])-1)])))
+                    case 1:
+                        alignment = ref_alignment
             else:
                 # If it is not a match, randomly pull from the other siloes
                 not_ref_idx = self._gen_rand_exc(ref_indx,len(self.pkl_alignment_list)-1)
-                alignment = self.char_to_int(list(self.pkl_alignment_list[not_ref_idx][self._gen_rand_nb(len(self.pkl_alignment_list[not_ref_idx])-1)]))
+                #print("Running else:\t",not_ref_idx,"\tinstead of:\t",ref_indx)
+                match mode:
+                    case 0:
+                        alignment = list(self.char_to_int(list(self.pkl_alignment_list[not_ref_idx][self._gen_rand_nb(len(self.pkl_alignment_list[not_ref_idx])-1)])))
+                    case 1:
+                        alignment = list(self.char_to_int(self.clones[not_ref_idx]))
             alignments.append(alignment)
             ref_alignments.append(ref_alignment)
             labels.append(label)
-        return np.array(alignments), np.array(ref_alignments), labels
+        return alignments, ref_alignments, labels
+
+    def pile_up(self, sequence_ref, sequence_alignment) -> (np.ndarray, list) :
+        """Merge two arrays into one line, assume both lists are the same length
+        
+        Parameters
+        ----------
+        sequence_ref : list
+            Description
+        sequence_alignment : list
+            Description
+        
+        Returns
+        -------
+        np.ndarray, list
+            Description
+        
+        Deleted Parameters
+        ------------------
+        num_sequences : int, optional
+            Description
+        mode : int, optional
+            Description
+        """
+        alignment_pileup = []
+        for idx in tqdm(range(num_sequences)):
+            pile_up_single = [sequence_ref[idx]]
+            pile_up_single.append(sequence_alignment[idx])
+            alignment_pileup.append(pile_up_single)
+        return alignment_pileup
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
