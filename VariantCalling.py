@@ -12,6 +12,7 @@ class VariantCalling:
         self.mutation_type_names = mutation_types_names
         self.NUCLEOTIDES = "ACGT"
         self.transdict = {"A":0, "C": 1, "G":2, "T":3}
+        self.transdict_reverse = {"0":"A", "1": "C", "2":"G", "3":"T"}
         self.pkl_sequence = pkl_sequence
         self.pkl_clones = pkl_clones
         self.pkl_alignment_list = [] # This is the variable that holds the real-world data converted
@@ -113,6 +114,12 @@ class VariantCallingData(VariantCalling):
         if alignments is None:
             alignments = self.alignments
         return np.vectorize(self.transdict.get)(alignments)
+
+    def int_to_char(self, alignments=None) -> np.ndarray:
+        """Maps the char ACGT to the corresponding integers"""
+        if alignments is None:
+            alignments = self.alignments
+        return np.vectorize(self.transdict_reverse.get)(alignments.astype("str"))
     
     def plot_data(self, alignments_ints=None, mutation_types=None, mutation_index=0) -> None:
         """Use to plot an alignment at a certain mutation type
@@ -160,14 +167,16 @@ class VariantCallingData(VariantCalling):
         """
         alignments = []
         prob_lists = []
+        row_clones = []
         for _ in tqdm(range(num_alignments)):
-            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+            alignment, prob_list, row_clone = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
+            row_clones.append(row_clone)
 
         self.alignments = alignments
         print(f"Done, Number of alignments: {num_alignments}")
-        return np.array(alignments), prob_lists
+        return np.array(alignments), prob_lists, row_clones
 
     def ratio_gen(self, coverage, p_sequencing_error=0, p_alignment_error=0) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
@@ -206,6 +215,7 @@ class VariantCallingData(VariantCalling):
             nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1        
 
         coverage_list = []
+        clone_idx_list = []
         for clone_idx, nb_clone_coverage in enumerate(nb_coverage_list):
             for _ in range(0,nb_clone_coverage):
                 match self.gen_mode:
@@ -214,6 +224,7 @@ class VariantCallingData(VariantCalling):
                         self._add_errors(self, self.clones[clone_idx],p_sequencing_error,p_alignment_error))
                     case 2: # Load from pickle
                         coverage_list.append(list(self.pkl_alignment_list[clone_idx][self._gen_rand_nb(len(self.pkl_alignment_list[clone_idx])-1)]))
+                clone_idx_list.append(clone_idx)
 
         # This will be the final probability list
         prob_list = [nb_coverage_list[i]/coverage for i in range(0, len(nb_coverage_list))]
@@ -221,9 +232,11 @@ class VariantCallingData(VariantCalling):
         # Here we shuffle the list and concatenate into the final alignment
         choice_indices = np.random.choice(len(coverage_list), coverage, replace=False)
         alignment = [self.clones[0]] # First row is always reference (assumed to be index at 0)
+        row_clone = [0]
         alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
+        row_clone += [clone_idx_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
 
-        return alignment, prob_list
+        return alignment, prob_list, row_clone
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
