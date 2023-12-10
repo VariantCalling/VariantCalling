@@ -9,9 +9,9 @@ import numpy as np
 
 class PickleLoader:
     def __init__(self, sequence="CRT",clones=["7G8"]) -> None:
-        self.supported_sequence = ("CRT","DHPS","DHFR")
-        if sequence not in self.supported_sequence:
-            raise ValueError("Currently supported are: " + str(self.supported_sequence))
+        #self.supported_sequence = ("CRT","DHPS","DHFR")
+        #if sequence not in self.supported_sequence:
+        #    raise ValueError("Currently supported are: " + str(self.supported_sequence))
         self.sequence = sequence
         self.clones = clones
         self.pickle_path = r"pickle/" + sequence
