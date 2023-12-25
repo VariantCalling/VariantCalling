@@ -1,28 +1,3 @@
-# def primes(int nb_primes):
-#     cdef int n, i, len_p
-#     cdef int[1000] p
-
-#     if nb_primes > 1000:
-#         nb_primes = 1000
-
-#     len_p = 0  # The current number of elements in p.
-#     n = 2
-#     while len_p < nb_primes:
-#         # Is n prime?
-#         for i in p[:len_p]:
-#             if n % i == 0:
-#                 break
-
-#         # If no break occurred in the loop, we have a prime.
-#         else:
-#             p[len_p] = n
-#             len_p += 1
-#         n += 1
-
-#     # Let's copy the result into a Python list:
-#     result_as_list = [prime for prime in p[:len_p]]
-#     return result_as_list
-
 from libc.stdlib cimport rand, srand, RAND_MAX
 from libc.time cimport time
 
@@ -41,6 +16,8 @@ def get_random_int(int i):
 
 def draw_from_uniform():
     """Get a random number in the range 0 and 1 from a uniform distribution"""
-    cdef double random_uniform = rand() / <double>(RAND_MAX + 1)
+    cdef double rand_max = (RAND_MAX + 1)
+    cdef double random_draw = rand()
+    cdef double random_uniform = abs(random_draw / rand_max)  # getting this weird bug where on mac the numbers are negative
     return random_uniform
 
