@@ -3,9 +3,10 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
+        "depends": [],
         "name": "VCDataGenerator",
         "sources": [
-            "C:\\Users\\Chulabutrach\\Documents\\Coding\\Projects\\VariantCalling\\DataGenerator\\VCDataGenerator.pyx"
+            ".\\VCDataGenerator.pyx"
         ]
     },
     "module_name": "VCDataGenerator"
@@ -1196,6 +1197,10 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__VCDataGenerator
 #define __PYX_HAVE_API__VCDataGenerator
 /* Early includes */
+#include <string.h>
+#include <stdlib.h>
+#include <stddef.h>
+#include <time.h>
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1461,7 +1466,7 @@ static const char *__pyx_filename;
 /* #### Code section: filename_table ### */
 
 static const char *__pyx_f[] = {
-  "DataGenerator\\\\VCDataGenerator.pyx",
+  "VCDataGenerator.pyx",
 };
 /* #### Code section: utility_code_proto_before_types ### */
 /* ForceInitThreads.proto */
@@ -1634,27 +1639,6 @@ static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
 
 /* ModInt[int].proto */
 static CYTHON_INLINE int __Pyx_mod_int(int, int);
-
-/* ListCompAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
-        Py_INCREF(x);
-        #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030d0000
-        L->ob_item[len] = x;
-        #else
-        PyList_SET_ITEM(list, len, x);
-        #endif
-        __Pyx_SET_SIZE(list, len + 1);
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
 
 /* IncludeStructmemberH.proto */
 #include <structmember.h>
@@ -1919,6 +1903,9 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object);
 static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
+/* IntPow.proto */
+static CYTHON_INLINE time_t __Pyx_pow_time_t(time_t, time_t);
+
 /* GCCDiagnostics.proto */
 #if !defined(__INTEL_COMPILER) && defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #define __Pyx_HAS_GCC_DIAGNOSTIC
@@ -1975,7 +1962,18 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* #### Code section: module_declarations ### */
 
+/* Module declarations from "libc.string" */
+
+/* Module declarations from "libc.stdlib" */
+
+/* Module declarations from "libc.stddef" */
+
+/* Module declarations from "libc.time" */
+
 /* Module declarations from "VCDataGenerator" */
+static int __pyx_v_15VCDataGenerator_NUCLEOTIDE_INDEX[4];
+static char __pyx_v_15VCDataGenerator_NUCLEOTIDE[4];
+static PyObject *__pyx_v_15VCDataGenerator_NUCLEOTIDE_2_INDEX = 0;
 /* #### Code section: typeinfo ### */
 /* #### Code section: before_global_var ### */
 #define __Pyx_MODULE_NAME "VCDataGenerator"
@@ -1985,25 +1983,27 @@ int __pyx_module_is_main_VCDataGenerator = 0;
 /* Implementation of "VCDataGenerator" */
 /* #### Code section: global_var ### */
 /* #### Code section: string_decls ### */
+static const char __pyx_k_A[] = "A";
+static const char __pyx_k_C[] = "C";
+static const char __pyx_k_G[] = "G";
+static const char __pyx_k_T[] = "T";
 static const char __pyx_k_i[] = "i";
-static const char __pyx_k_n[] = "n";
-static const char __pyx_k_p[] = "p";
-static const char __pyx_k__3[] = "?";
+static const char __pyx_k__5[] = "?";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_len_p[] = "len_p";
-static const char __pyx_k_prime[] = "prime";
-static const char __pyx_k_primes[] = "primes";
-static const char __pyx_k_nb_primes[] = "nb_primes";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
-static const char __pyx_k_result_as_list[] = "result_as_list";
+static const char __pyx_k_random_number[] = "random_number";
+static const char __pyx_k_get_random_int[] = "get_random_int";
+static const char __pyx_k_random_uniform[] = "random_uniform";
 static const char __pyx_k_VCDataGenerator[] = "VCDataGenerator";
+static const char __pyx_k_draw_from_uniform[] = "draw_from_uniform";
 static const char __pyx_k_asyncio_coroutines[] = "asyncio.coroutines";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_DataGenerator_VCDataGenerator_py[] = "DataGenerator\\VCDataGenerator.pyx";
+static const char __pyx_k_VCDataGenerator_pyx[] = "VCDataGenerator.pyx";
 /* #### Code section: decls ### */
-static PyObject *__pyx_pf_15VCDataGenerator_primes(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_nb_primes); /* proto */
+static PyObject *__pyx_pf_15VCDataGenerator_get_random_int(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_i); /* proto */
+static PyObject *__pyx_pf_15VCDataGenerator_2draw_from_uniform(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
 typedef struct {
@@ -2033,25 +2033,40 @@ typedef struct {
   #endif
   #if CYTHON_USE_MODULE_STATE
   #endif
-  PyObject *__pyx_kp_s_DataGenerator_VCDataGenerator_py;
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  #if CYTHON_USE_MODULE_STATE
+  #endif
+  PyObject *__pyx_n_s_A;
+  PyObject *__pyx_n_s_C;
+  PyObject *__pyx_n_s_G;
+  PyObject *__pyx_n_s_T;
   PyObject *__pyx_n_s_VCDataGenerator;
-  PyObject *__pyx_n_s__3;
+  PyObject *__pyx_kp_s_VCDataGenerator_pyx;
+  PyObject *__pyx_n_s__5;
   PyObject *__pyx_n_s_asyncio_coroutines;
   PyObject *__pyx_n_s_cline_in_traceback;
+  PyObject *__pyx_n_s_draw_from_uniform;
+  PyObject *__pyx_n_s_get_random_int;
   PyObject *__pyx_n_s_i;
   PyObject *__pyx_n_s_is_coroutine;
-  PyObject *__pyx_n_s_len_p;
   PyObject *__pyx_n_s_main;
-  PyObject *__pyx_n_s_n;
   PyObject *__pyx_n_s_name;
-  PyObject *__pyx_n_s_nb_primes;
-  PyObject *__pyx_n_s_p;
-  PyObject *__pyx_n_s_prime;
-  PyObject *__pyx_n_s_primes;
-  PyObject *__pyx_n_s_result_as_list;
+  PyObject *__pyx_n_s_random_number;
+  PyObject *__pyx_n_s_random_uniform;
   PyObject *__pyx_n_s_test;
+  PyObject *__pyx_int_0;
+  PyObject *__pyx_int_1;
+  PyObject *__pyx_int_2;
+  PyObject *__pyx_int_3;
   PyObject *__pyx_tuple_;
+  PyObject *__pyx_tuple__3;
   PyObject *__pyx_codeobj__2;
+  PyObject *__pyx_codeobj__4;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2094,25 +2109,32 @@ static int __pyx_m_clear(PyObject *m) {
   #ifdef __Pyx_FusedFunction_USED
   Py_CLEAR(clear_module_state->__pyx_FusedFunctionType);
   #endif
-  Py_CLEAR(clear_module_state->__pyx_kp_s_DataGenerator_VCDataGenerator_py);
+  Py_CLEAR(clear_module_state->__pyx_n_s_A);
+  Py_CLEAR(clear_module_state->__pyx_n_s_C);
+  Py_CLEAR(clear_module_state->__pyx_n_s_G);
+  Py_CLEAR(clear_module_state->__pyx_n_s_T);
   Py_CLEAR(clear_module_state->__pyx_n_s_VCDataGenerator);
-  Py_CLEAR(clear_module_state->__pyx_n_s__3);
+  Py_CLEAR(clear_module_state->__pyx_kp_s_VCDataGenerator_pyx);
+  Py_CLEAR(clear_module_state->__pyx_n_s__5);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
+  Py_CLEAR(clear_module_state->__pyx_n_s_draw_from_uniform);
+  Py_CLEAR(clear_module_state->__pyx_n_s_get_random_int);
   Py_CLEAR(clear_module_state->__pyx_n_s_i);
   Py_CLEAR(clear_module_state->__pyx_n_s_is_coroutine);
-  Py_CLEAR(clear_module_state->__pyx_n_s_len_p);
   Py_CLEAR(clear_module_state->__pyx_n_s_main);
-  Py_CLEAR(clear_module_state->__pyx_n_s_n);
   Py_CLEAR(clear_module_state->__pyx_n_s_name);
-  Py_CLEAR(clear_module_state->__pyx_n_s_nb_primes);
-  Py_CLEAR(clear_module_state->__pyx_n_s_p);
-  Py_CLEAR(clear_module_state->__pyx_n_s_prime);
-  Py_CLEAR(clear_module_state->__pyx_n_s_primes);
-  Py_CLEAR(clear_module_state->__pyx_n_s_result_as_list);
+  Py_CLEAR(clear_module_state->__pyx_n_s_random_number);
+  Py_CLEAR(clear_module_state->__pyx_n_s_random_uniform);
   Py_CLEAR(clear_module_state->__pyx_n_s_test);
+  Py_CLEAR(clear_module_state->__pyx_int_0);
+  Py_CLEAR(clear_module_state->__pyx_int_1);
+  Py_CLEAR(clear_module_state->__pyx_int_2);
+  Py_CLEAR(clear_module_state->__pyx_int_3);
   Py_CLEAR(clear_module_state->__pyx_tuple_);
+  Py_CLEAR(clear_module_state->__pyx_tuple__3);
   Py_CLEAR(clear_module_state->__pyx_codeobj__2);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__4);
   return 0;
 }
 #endif
@@ -2133,25 +2155,32 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   #ifdef __Pyx_FusedFunction_USED
   Py_VISIT(traverse_module_state->__pyx_FusedFunctionType);
   #endif
-  Py_VISIT(traverse_module_state->__pyx_kp_s_DataGenerator_VCDataGenerator_py);
+  Py_VISIT(traverse_module_state->__pyx_n_s_A);
+  Py_VISIT(traverse_module_state->__pyx_n_s_C);
+  Py_VISIT(traverse_module_state->__pyx_n_s_G);
+  Py_VISIT(traverse_module_state->__pyx_n_s_T);
   Py_VISIT(traverse_module_state->__pyx_n_s_VCDataGenerator);
-  Py_VISIT(traverse_module_state->__pyx_n_s__3);
+  Py_VISIT(traverse_module_state->__pyx_kp_s_VCDataGenerator_pyx);
+  Py_VISIT(traverse_module_state->__pyx_n_s__5);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
+  Py_VISIT(traverse_module_state->__pyx_n_s_draw_from_uniform);
+  Py_VISIT(traverse_module_state->__pyx_n_s_get_random_int);
   Py_VISIT(traverse_module_state->__pyx_n_s_i);
   Py_VISIT(traverse_module_state->__pyx_n_s_is_coroutine);
-  Py_VISIT(traverse_module_state->__pyx_n_s_len_p);
   Py_VISIT(traverse_module_state->__pyx_n_s_main);
-  Py_VISIT(traverse_module_state->__pyx_n_s_n);
   Py_VISIT(traverse_module_state->__pyx_n_s_name);
-  Py_VISIT(traverse_module_state->__pyx_n_s_nb_primes);
-  Py_VISIT(traverse_module_state->__pyx_n_s_p);
-  Py_VISIT(traverse_module_state->__pyx_n_s_prime);
-  Py_VISIT(traverse_module_state->__pyx_n_s_primes);
-  Py_VISIT(traverse_module_state->__pyx_n_s_result_as_list);
+  Py_VISIT(traverse_module_state->__pyx_n_s_random_number);
+  Py_VISIT(traverse_module_state->__pyx_n_s_random_uniform);
   Py_VISIT(traverse_module_state->__pyx_n_s_test);
+  Py_VISIT(traverse_module_state->__pyx_int_0);
+  Py_VISIT(traverse_module_state->__pyx_int_1);
+  Py_VISIT(traverse_module_state->__pyx_int_2);
+  Py_VISIT(traverse_module_state->__pyx_int_3);
   Py_VISIT(traverse_module_state->__pyx_tuple_);
+  Py_VISIT(traverse_module_state->__pyx_tuple__3);
   Py_VISIT(traverse_module_state->__pyx_codeobj__2);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__4);
   return 0;
 }
 #endif
@@ -2182,50 +2211,68 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #endif
 #if CYTHON_USE_MODULE_STATE
 #endif
-#define __pyx_kp_s_DataGenerator_VCDataGenerator_py __pyx_mstate_global->__pyx_kp_s_DataGenerator_VCDataGenerator_py
+#if CYTHON_USE_MODULE_STATE
+#endif
+#if CYTHON_USE_MODULE_STATE
+#endif
+#if CYTHON_USE_MODULE_STATE
+#endif
+#if CYTHON_USE_MODULE_STATE
+#endif
+#define __pyx_n_s_A __pyx_mstate_global->__pyx_n_s_A
+#define __pyx_n_s_C __pyx_mstate_global->__pyx_n_s_C
+#define __pyx_n_s_G __pyx_mstate_global->__pyx_n_s_G
+#define __pyx_n_s_T __pyx_mstate_global->__pyx_n_s_T
 #define __pyx_n_s_VCDataGenerator __pyx_mstate_global->__pyx_n_s_VCDataGenerator
-#define __pyx_n_s__3 __pyx_mstate_global->__pyx_n_s__3
+#define __pyx_kp_s_VCDataGenerator_pyx __pyx_mstate_global->__pyx_kp_s_VCDataGenerator_pyx
+#define __pyx_n_s__5 __pyx_mstate_global->__pyx_n_s__5
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
+#define __pyx_n_s_draw_from_uniform __pyx_mstate_global->__pyx_n_s_draw_from_uniform
+#define __pyx_n_s_get_random_int __pyx_mstate_global->__pyx_n_s_get_random_int
 #define __pyx_n_s_i __pyx_mstate_global->__pyx_n_s_i
 #define __pyx_n_s_is_coroutine __pyx_mstate_global->__pyx_n_s_is_coroutine
-#define __pyx_n_s_len_p __pyx_mstate_global->__pyx_n_s_len_p
 #define __pyx_n_s_main __pyx_mstate_global->__pyx_n_s_main
-#define __pyx_n_s_n __pyx_mstate_global->__pyx_n_s_n
 #define __pyx_n_s_name __pyx_mstate_global->__pyx_n_s_name
-#define __pyx_n_s_nb_primes __pyx_mstate_global->__pyx_n_s_nb_primes
-#define __pyx_n_s_p __pyx_mstate_global->__pyx_n_s_p
-#define __pyx_n_s_prime __pyx_mstate_global->__pyx_n_s_prime
-#define __pyx_n_s_primes __pyx_mstate_global->__pyx_n_s_primes
-#define __pyx_n_s_result_as_list __pyx_mstate_global->__pyx_n_s_result_as_list
+#define __pyx_n_s_random_number __pyx_mstate_global->__pyx_n_s_random_number
+#define __pyx_n_s_random_uniform __pyx_mstate_global->__pyx_n_s_random_uniform
 #define __pyx_n_s_test __pyx_mstate_global->__pyx_n_s_test
+#define __pyx_int_0 __pyx_mstate_global->__pyx_int_0
+#define __pyx_int_1 __pyx_mstate_global->__pyx_int_1
+#define __pyx_int_2 __pyx_mstate_global->__pyx_int_2
+#define __pyx_int_3 __pyx_mstate_global->__pyx_int_3
 #define __pyx_tuple_ __pyx_mstate_global->__pyx_tuple_
+#define __pyx_tuple__3 __pyx_mstate_global->__pyx_tuple__3
 #define __pyx_codeobj__2 __pyx_mstate_global->__pyx_codeobj__2
+#define __pyx_codeobj__4 __pyx_mstate_global->__pyx_codeobj__4
 /* #### Code section: module_code ### */
 
-/* "VCDataGenerator.pyx":1
- * def primes(int nb_primes):             # <<<<<<<<<<<<<<
- *     cdef int n, i, len_p
- *     cdef int[1000] p
+/* "VCDataGenerator.pyx":36
+ * 
+ * 
+ * def get_random_int(int i):             # <<<<<<<<<<<<<<
+ *     """Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4"""
+ *     cdef int random_number = rand() % i
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_15VCDataGenerator_1primes(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_15VCDataGenerator_1get_random_int(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15VCDataGenerator_1primes = {"primes", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15VCDataGenerator_1primes, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_15VCDataGenerator_1primes(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_15VCDataGenerator_get_random_int, "Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4");
+static PyMethodDef __pyx_mdef_15VCDataGenerator_1get_random_int = {"get_random_int", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15VCDataGenerator_1get_random_int, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15VCDataGenerator_get_random_int};
+static PyObject *__pyx_pw_15VCDataGenerator_1get_random_int(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ) {
-  int __pyx_v_nb_primes;
+  int __pyx_v_i;
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
@@ -2236,7 +2283,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("primes (wrapper)", 0);
+  __Pyx_RefNannySetupContext("get_random_int (wrapper)", 0);
   #if !CYTHON_METH_FASTCALL
   #if CYTHON_ASSUME_SAFE_MACROS
   __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
@@ -2246,7 +2293,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   #endif
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
-    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_nb_primes,0};
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_i,0};
     if (__pyx_kwds) {
       Py_ssize_t kw_args;
       switch (__pyx_nargs) {
@@ -2258,27 +2305,27 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
       switch (__pyx_nargs) {
         case  0:
-        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_nb_primes)) != 0)) {
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_i)) != 0)) {
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 36, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "primes") < 0)) __PYX_ERR(0, 1, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_random_int") < 0)) __PYX_ERR(0, 36, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
     }
-    __pyx_v_nb_primes = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_nb_primes == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1, __pyx_L3_error)
+    __pyx_v_i = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_i == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 36, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("primes", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 1, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_random_int", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 36, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -2288,11 +2335,11 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
     }
   }
-  __Pyx_AddTraceback("VCDataGenerator.primes", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("VCDataGenerator.get_random_int", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_15VCDataGenerator_primes(__pyx_self, __pyx_v_nb_primes);
+  __pyx_r = __pyx_pf_15VCDataGenerator_get_random_int(__pyx_self, __pyx_v_i);
 
   /* function exit code */
   {
@@ -2305,205 +2352,143 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_15VCDataGenerator_primes(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_nb_primes) {
-  int __pyx_v_n;
-  int __pyx_v_i;
-  int __pyx_v_len_p;
-  int __pyx_v_p[0x3E8];
-  PyObject *__pyx_v_result_as_list = NULL;
-  int __pyx_7genexpr__pyx_v_prime;
+static PyObject *__pyx_pf_15VCDataGenerator_get_random_int(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_i) {
+  int __pyx_v_random_number;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
-  int *__pyx_t_2;
-  int *__pyx_t_3;
-  int *__pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_2 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("primes", 1);
+  __Pyx_RefNannySetupContext("get_random_int", 1);
 
-  /* "VCDataGenerator.pyx":5
- *     cdef int[1000] p
- * 
- *     if nb_primes > 1000:             # <<<<<<<<<<<<<<
- *         nb_primes = 1000
+  /* "VCDataGenerator.pyx":38
+ * def get_random_int(int i):
+ *     """Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4"""
+ *     cdef int random_number = rand() % i             # <<<<<<<<<<<<<<
+ *     return random_number
  * 
  */
-  __pyx_t_1 = (__pyx_v_nb_primes > 0x3E8);
-  if (__pyx_t_1) {
-
-    /* "VCDataGenerator.pyx":6
- * 
- *     if nb_primes > 1000:
- *         nb_primes = 1000             # <<<<<<<<<<<<<<
- * 
- *     len_p = 0  # The current number of elements in p.
- */
-    __pyx_v_nb_primes = 0x3E8;
-
-    /* "VCDataGenerator.pyx":5
- *     cdef int[1000] p
- * 
- *     if nb_primes > 1000:             # <<<<<<<<<<<<<<
- *         nb_primes = 1000
- * 
- */
+  __pyx_t_1 = rand();
+  if (unlikely(__pyx_v_i == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
+    __PYX_ERR(0, 38, __pyx_L1_error)
   }
+  __pyx_v_random_number = __Pyx_mod_int(__pyx_t_1, __pyx_v_i);
 
-  /* "VCDataGenerator.pyx":8
- *         nb_primes = 1000
+  /* "VCDataGenerator.pyx":39
+ *     """Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4"""
+ *     cdef int random_number = rand() % i
+ *     return random_number             # <<<<<<<<<<<<<<
  * 
- *     len_p = 0  # The current number of elements in p.             # <<<<<<<<<<<<<<
- *     n = 2
- *     while len_p < nb_primes:
- */
-  __pyx_v_len_p = 0;
-
-  /* "VCDataGenerator.pyx":9
  * 
- *     len_p = 0  # The current number of elements in p.
- *     n = 2             # <<<<<<<<<<<<<<
- *     while len_p < nb_primes:
- *         # Is n prime?
- */
-  __pyx_v_n = 2;
-
-  /* "VCDataGenerator.pyx":10
- *     len_p = 0  # The current number of elements in p.
- *     n = 2
- *     while len_p < nb_primes:             # <<<<<<<<<<<<<<
- *         # Is n prime?
- *         for i in p[:len_p]:
- */
-  while (1) {
-    __pyx_t_1 = (__pyx_v_len_p < __pyx_v_nb_primes);
-    if (!__pyx_t_1) break;
-
-    /* "VCDataGenerator.pyx":12
- *     while len_p < nb_primes:
- *         # Is n prime?
- *         for i in p[:len_p]:             # <<<<<<<<<<<<<<
- *             if n % i == 0:
- *                 break
- */
-    __pyx_t_3 = (__pyx_v_p + __pyx_v_len_p);
-    for (__pyx_t_4 = __pyx_v_p; __pyx_t_4 < __pyx_t_3; __pyx_t_4++) {
-      __pyx_t_2 = __pyx_t_4;
-      __pyx_v_i = (__pyx_t_2[0]);
-
-      /* "VCDataGenerator.pyx":13
- *         # Is n prime?
- *         for i in p[:len_p]:
- *             if n % i == 0:             # <<<<<<<<<<<<<<
- *                 break
- * 
- */
-      if (unlikely(__pyx_v_i == 0)) {
-        PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-        __PYX_ERR(0, 13, __pyx_L1_error)
-      }
-      __pyx_t_1 = (__Pyx_mod_int(__pyx_v_n, __pyx_v_i) == 0);
-      if (__pyx_t_1) {
-
-        /* "VCDataGenerator.pyx":14
- *         for i in p[:len_p]:
- *             if n % i == 0:
- *                 break             # <<<<<<<<<<<<<<
- * 
- *         # If no break occurred in the loop, we have a prime.
- */
-        goto __pyx_L7_break;
-
-        /* "VCDataGenerator.pyx":13
- *         # Is n prime?
- *         for i in p[:len_p]:
- *             if n % i == 0:             # <<<<<<<<<<<<<<
- *                 break
- * 
- */
-      }
-    }
-    /*else*/ {
-
-      /* "VCDataGenerator.pyx":18
- *         # If no break occurred in the loop, we have a prime.
- *         else:
- *             p[len_p] = n             # <<<<<<<<<<<<<<
- *             len_p += 1
- *         n += 1
- */
-      (__pyx_v_p[__pyx_v_len_p]) = __pyx_v_n;
-
-      /* "VCDataGenerator.pyx":19
- *         else:
- *             p[len_p] = n
- *             len_p += 1             # <<<<<<<<<<<<<<
- *         n += 1
- * 
- */
-      __pyx_v_len_p = (__pyx_v_len_p + 1);
-    }
-    __pyx_L7_break:;
-
-    /* "VCDataGenerator.pyx":20
- *             p[len_p] = n
- *             len_p += 1
- *         n += 1             # <<<<<<<<<<<<<<
- * 
- *     # Let's copy the result into a Python list:
- */
-    __pyx_v_n = (__pyx_v_n + 1);
-  }
-
-  /* "VCDataGenerator.pyx":23
- * 
- *     # Let's copy the result into a Python list:
- *     result_as_list = [prime for prime in p[:len_p]]             # <<<<<<<<<<<<<<
- *     return result_as_list
- */
-  { /* enter inner scope */
-    __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = (__pyx_v_p + __pyx_v_len_p);
-    for (__pyx_t_4 = __pyx_v_p; __pyx_t_4 < __pyx_t_3; __pyx_t_4++) {
-      __pyx_t_2 = __pyx_t_4;
-      __pyx_7genexpr__pyx_v_prime = (__pyx_t_2[0]);
-      __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_7genexpr__pyx_v_prime); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 23, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_5, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 23, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    }
-  } /* exit inner scope */
-  __pyx_v_result_as_list = ((PyObject*)__pyx_t_5);
-  __pyx_t_5 = 0;
-
-  /* "VCDataGenerator.pyx":24
- *     # Let's copy the result into a Python list:
- *     result_as_list = [prime for prime in p[:len_p]]
- *     return result_as_list             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_result_as_list);
-  __pyx_r = __pyx_v_result_as_list;
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_random_number); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "VCDataGenerator.pyx":1
- * def primes(int nb_primes):             # <<<<<<<<<<<<<<
- *     cdef int n, i, len_p
- *     cdef int[1000] p
+  /* "VCDataGenerator.pyx":36
+ * 
+ * 
+ * def get_random_int(int i):             # <<<<<<<<<<<<<<
+ *     """Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4"""
+ *     cdef int random_number = rand() % i
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("VCDataGenerator.primes", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("VCDataGenerator.get_random_int", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_result_as_list);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "VCDataGenerator.pyx":42
+ * 
+ * 
+ * def draw_from_uniform():             # <<<<<<<<<<<<<<
+ *     """Get a random number in the range 0 and 1 from a uniform distribution"""
+ *     cdef double random_uniform = rand() / <double>(RAND_MAX + 1)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_15VCDataGenerator_3draw_from_uniform(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+PyDoc_STRVAR(__pyx_doc_15VCDataGenerator_2draw_from_uniform, "Get a random number in the range 0 and 1 from a uniform distribution");
+static PyMethodDef __pyx_mdef_15VCDataGenerator_3draw_from_uniform = {"draw_from_uniform", (PyCFunction)__pyx_pw_15VCDataGenerator_3draw_from_uniform, METH_NOARGS, __pyx_doc_15VCDataGenerator_2draw_from_uniform};
+static PyObject *__pyx_pw_15VCDataGenerator_3draw_from_uniform(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("draw_from_uniform (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_pf_15VCDataGenerator_2draw_from_uniform(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_15VCDataGenerator_2draw_from_uniform(CYTHON_UNUSED PyObject *__pyx_self) {
+  double __pyx_v_random_uniform;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  double __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("draw_from_uniform", 1);
+
+  /* "VCDataGenerator.pyx":44
+ * def draw_from_uniform():
+ *     """Get a random number in the range 0 and 1 from a uniform distribution"""
+ *     cdef double random_uniform = rand() / <double>(RAND_MAX + 1)             # <<<<<<<<<<<<<<
+ *     return random_uniform
+ * 
+ */
+  __pyx_t_1 = rand();
+  __pyx_t_2 = ((double)(RAND_MAX + 1));
+  if (unlikely(__pyx_t_2 == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    __PYX_ERR(0, 44, __pyx_L1_error)
+  }
+  __pyx_v_random_uniform = (((double)__pyx_t_1) / __pyx_t_2);
+
+  /* "VCDataGenerator.pyx":45
+ *     """Get a random number in the range 0 and 1 from a uniform distribution"""
+ *     cdef double random_uniform = rand() / <double>(RAND_MAX + 1)
+ *     return random_uniform             # <<<<<<<<<<<<<<
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_random_uniform); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "VCDataGenerator.pyx":42
+ * 
+ * 
+ * def draw_from_uniform():             # <<<<<<<<<<<<<<
+ *     """Get a random number in the range 0 and 1 from a uniform distribution"""
+ *     cdef double random_uniform = rand() / <double>(RAND_MAX + 1)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("VCDataGenerator.draw_from_uniform", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -2525,22 +2510,23 @@ static PyMethodDef __pyx_methods[] = {
 
 static int __Pyx_CreateStringTabAndInitStrings(void) {
   __Pyx_StringTabEntry __pyx_string_tab[] = {
-    {&__pyx_kp_s_DataGenerator_VCDataGenerator_py, __pyx_k_DataGenerator_VCDataGenerator_py, sizeof(__pyx_k_DataGenerator_VCDataGenerator_py), 0, 0, 1, 0},
+    {&__pyx_n_s_A, __pyx_k_A, sizeof(__pyx_k_A), 0, 0, 1, 1},
+    {&__pyx_n_s_C, __pyx_k_C, sizeof(__pyx_k_C), 0, 0, 1, 1},
+    {&__pyx_n_s_G, __pyx_k_G, sizeof(__pyx_k_G), 0, 0, 1, 1},
+    {&__pyx_n_s_T, __pyx_k_T, sizeof(__pyx_k_T), 0, 0, 1, 1},
     {&__pyx_n_s_VCDataGenerator, __pyx_k_VCDataGenerator, sizeof(__pyx_k_VCDataGenerator), 0, 0, 1, 1},
-    {&__pyx_n_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 1},
+    {&__pyx_kp_s_VCDataGenerator_pyx, __pyx_k_VCDataGenerator_pyx, sizeof(__pyx_k_VCDataGenerator_pyx), 0, 0, 1, 0},
+    {&__pyx_n_s__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
+    {&__pyx_n_s_draw_from_uniform, __pyx_k_draw_from_uniform, sizeof(__pyx_k_draw_from_uniform), 0, 0, 1, 1},
+    {&__pyx_n_s_get_random_int, __pyx_k_get_random_int, sizeof(__pyx_k_get_random_int), 0, 0, 1, 1},
     {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
     {&__pyx_n_s_is_coroutine, __pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 0, 1, 1},
-    {&__pyx_n_s_len_p, __pyx_k_len_p, sizeof(__pyx_k_len_p), 0, 0, 1, 1},
     {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-    {&__pyx_n_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 1},
     {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
-    {&__pyx_n_s_nb_primes, __pyx_k_nb_primes, sizeof(__pyx_k_nb_primes), 0, 0, 1, 1},
-    {&__pyx_n_s_p, __pyx_k_p, sizeof(__pyx_k_p), 0, 0, 1, 1},
-    {&__pyx_n_s_prime, __pyx_k_prime, sizeof(__pyx_k_prime), 0, 0, 1, 1},
-    {&__pyx_n_s_primes, __pyx_k_primes, sizeof(__pyx_k_primes), 0, 0, 1, 1},
-    {&__pyx_n_s_result_as_list, __pyx_k_result_as_list, sizeof(__pyx_k_result_as_list), 0, 0, 1, 1},
+    {&__pyx_n_s_random_number, __pyx_k_random_number, sizeof(__pyx_k_random_number), 0, 0, 1, 1},
+    {&__pyx_n_s_random_uniform, __pyx_k_random_uniform, sizeof(__pyx_k_random_uniform), 0, 0, 1, 1},
     {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
     {0, 0, 0, 0, 0, 0, 0}
   };
@@ -2556,15 +2542,29 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "VCDataGenerator.pyx":1
- * def primes(int nb_primes):             # <<<<<<<<<<<<<<
- *     cdef int n, i, len_p
- *     cdef int[1000] p
+  /* "VCDataGenerator.pyx":36
+ * 
+ * 
+ * def get_random_int(int i):             # <<<<<<<<<<<<<<
+ *     """Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4"""
+ *     cdef int random_number = rand() % i
  */
-  __pyx_tuple_ = PyTuple_Pack(7, __pyx_n_s_nb_primes, __pyx_n_s_n, __pyx_n_s_i, __pyx_n_s_len_p, __pyx_n_s_p, __pyx_n_s_result_as_list, __pyx_n_s_prime); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_i, __pyx_n_s_random_number); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_DataGenerator_VCDataGenerator_py, __pyx_n_s_primes, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_get_random_int, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 36, __pyx_L1_error)
+
+  /* "VCDataGenerator.pyx":42
+ * 
+ * 
+ * def draw_from_uniform():             # <<<<<<<<<<<<<<
+ *     """Get a random number in the range 0 and 1 from a uniform distribution"""
+ *     cdef double random_uniform = rand() / <double>(RAND_MAX + 1)
+ */
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_n_s_random_uniform); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__3);
+  __Pyx_GIVEREF(__pyx_tuple__3);
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_draw_from_uniform, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2575,6 +2575,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2598,6 +2602,7 @@ static int __Pyx_modinit_global_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_global_init_code", 0);
   /*--- Global init code ---*/
+  __pyx_v_15VCDataGenerator_NUCLEOTIDE_2_INDEX = ((PyObject*)Py_None); Py_INCREF(Py_None);
   __Pyx_RefNannyFinishContext();
   return 0;
 }
@@ -2812,7 +2817,9 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_VCDataGenerator(PyObject *__pyx_py
   int pystate_addmodule_run = 0;
   #endif
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
+  static int __pyx_t_2[4];
+  static char __pyx_t_3[4];
+  PyObject *__pyx_t_4 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2928,25 +2935,98 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "VCDataGenerator.pyx":1
- * def primes(int nb_primes):             # <<<<<<<<<<<<<<
- *     cdef int n, i, len_p
- *     cdef int[1000] p
+  /* "VCDataGenerator.pyx":29
+ * from libc.time cimport time
+ * 
+ * srand(time(NULL) ** 2)             # <<<<<<<<<<<<<<
+ * 
+ * cdef int[4] NUCLEOTIDE_INDEX = [0, 1, 2, 3]
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_1primes, 0, __pyx_n_s_primes, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_primes, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  srand(__Pyx_pow_time_t(time(NULL), 2));
+
+  /* "VCDataGenerator.pyx":31
+ * srand(time(NULL) ** 2)
+ * 
+ * cdef int[4] NUCLEOTIDE_INDEX = [0, 1, 2, 3]             # <<<<<<<<<<<<<<
+ * cdef char[4] NUCLEOTIDE = ['A', 'C', 'G', 'T']  # This also give INDEX_2_NUCLEOTIDE
+ * cdef dict NUCLEOTIDE_2_INDEX = {'A' : 0, 'C' : 1, 'G' : 2, 'T' : 3}
+ */
+  __pyx_t_2[0] = 0;
+  __pyx_t_2[1] = 1;
+  __pyx_t_2[2] = 2;
+  __pyx_t_2[3] = 3;
+  memcpy(&(__pyx_v_15VCDataGenerator_NUCLEOTIDE_INDEX[0]), __pyx_t_2, sizeof(__pyx_v_15VCDataGenerator_NUCLEOTIDE_INDEX[0]) * (4));
+
+  /* "VCDataGenerator.pyx":32
+ * 
+ * cdef int[4] NUCLEOTIDE_INDEX = [0, 1, 2, 3]
+ * cdef char[4] NUCLEOTIDE = ['A', 'C', 'G', 'T']  # This also give INDEX_2_NUCLEOTIDE             # <<<<<<<<<<<<<<
+ * cdef dict NUCLEOTIDE_2_INDEX = {'A' : 0, 'C' : 1, 'G' : 2, 'T' : 3}
+ * 
+ */
+  __pyx_t_3[0] = 'A';
+  __pyx_t_3[1] = 'C';
+  __pyx_t_3[2] = 'G';
+  __pyx_t_3[3] = 'T';
+  memcpy(&(__pyx_v_15VCDataGenerator_NUCLEOTIDE[0]), __pyx_t_3, sizeof(__pyx_v_15VCDataGenerator_NUCLEOTIDE[0]) * (4));
+
+  /* "VCDataGenerator.pyx":33
+ * cdef int[4] NUCLEOTIDE_INDEX = [0, 1, 2, 3]
+ * cdef char[4] NUCLEOTIDE = ['A', 'C', 'G', 'T']  # This also give INDEX_2_NUCLEOTIDE
+ * cdef dict NUCLEOTIDE_2_INDEX = {'A' : 0, 'C' : 1, 'G' : 2, 'T' : 3}             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_A, __pyx_int_0) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_C, __pyx_int_1) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_G, __pyx_int_2) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_T, __pyx_int_3) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_XGOTREF(__pyx_v_15VCDataGenerator_NUCLEOTIDE_2_INDEX);
+  __Pyx_DECREF_SET(__pyx_v_15VCDataGenerator_NUCLEOTIDE_2_INDEX, ((PyObject*)__pyx_t_4));
+  __Pyx_GIVEREF(__pyx_t_4);
+  __pyx_t_4 = 0;
+
+  /* "VCDataGenerator.pyx":36
+ * 
+ * 
+ * def get_random_int(int i):             # <<<<<<<<<<<<<<
+ *     """Get a random number from 0 to i-1. eg. to draw clones 0 to 3 i will be 4"""
+ *     cdef int random_number = rand() % i
+ */
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_1get_random_int, 0, __pyx_n_s_get_random_int, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_random_int, __pyx_t_4) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "VCDataGenerator.pyx":42
+ * 
+ * 
+ * def draw_from_uniform():             # <<<<<<<<<<<<<<
+ *     """Get a random number in the range 0 and 1 from a uniform distribution"""
+ *     cdef double random_uniform = rand() / <double>(RAND_MAX + 1)
+ */
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_3draw_from_uniform, 0, __pyx_n_s_draw_from_uniform, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_draw_from_uniform, __pyx_t_4) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "VCDataGenerator.pyx":1
+ * # def primes(int nb_primes):             # <<<<<<<<<<<<<<
+ * #     cdef int n, i, len_p
+ * #     cdef int[1000] p
+ */
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_4) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /*--- Wrapped vars code ---*/
 
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_4);
   if (__pyx_m) {
     if (__pyx_d && stringtab_initialized) {
       __Pyx_AddTraceback("init VCDataGenerator", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5176,6 +5256,33 @@ bad:
 }
 #endif
 
+/* IntPow */
+static CYTHON_INLINE time_t __Pyx_pow_time_t(time_t b, time_t e) {
+    time_t t = b;
+    switch (e) {
+        case 3:
+            t *= b;
+        CYTHON_FALLTHROUGH;
+        case 2:
+            t *= b;
+        CYTHON_FALLTHROUGH;
+        case 1:
+            return t;
+        case 0:
+            return 1;
+    }
+    #if 1
+    if (unlikely(e<0)) return 0;
+    #endif
+    t = 1;
+    while (likely(e)) {
+        t *= (b * (e&1)) | ((~e)&1);
+        b *= b;
+        e >>= 1;
+    }
+    return t;
+}
+
 /* CIntFromPyVerify */
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -5545,7 +5652,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__3);
+        name = __Pyx_NewRef(__pyx_n_s__5);
     }
     return name;
 }
