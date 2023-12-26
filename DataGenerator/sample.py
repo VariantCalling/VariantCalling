@@ -1,5 +1,7 @@
-from VCDataGenerator import get_random_int, draw_from_uniform
+from VCDataGenerator import test_function_output, generate_random_clones 
+import time
+import numpy as np
 
-print(get_random_int(4))
+print(test_function_output())
 
-print(draw_from_uniform())
+print(generate_random_clones())
