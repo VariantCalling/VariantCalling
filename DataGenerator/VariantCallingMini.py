@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import sys
 from tqdm.notebook import tqdm
 
+HEIGHT = 100
+WIDTH = 178
+
 class VariantCalling:
     def __init__(self, mutation_labels, mutation_types_names, file_name) -> None:
         self.mutation_labels = mutation_labels

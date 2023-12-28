@@ -166,3 +166,5 @@ cython_debug/
 data*.pkl
 
 model*/
+
+build_run.*
