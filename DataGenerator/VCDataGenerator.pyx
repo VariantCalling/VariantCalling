@@ -48,6 +48,19 @@ cdef double _draw_from_normal(double mean, double std_deviation):
     return std_deviation * z + mean
 
 
+cdef int _draw_pos_neg():
+    """
+    Return 1 or -1 randomly with probably 0.5
+    - Tested on: Mac
+    """
+    cdef double u = _draw_from_uniform()
+
+    if u > 0.5:
+        return 1
+    else:
+        return -1
+
+
 cdef int _clip_to_int(double val, int max_val, int min_val):
     """
     Clip a value to a value within max_val and min_val
@@ -86,7 +99,10 @@ cdef _generate_random_sequence():
 
 
 cdef _generate_random_clones():
-    """Function which returns random sequence with its clones"""
+    """
+    Function which returns random sequence with its clones
+    - Tested on: Mac
+    """
     cdef MutantList clones
     cdef int[DEFAULT_WIDTH] random_seq = _generate_random_sequence()
     clones[0] = random_seq
@@ -96,7 +112,6 @@ cdef _generate_random_clones():
 
     cdef double mutation_pos_double = _draw_from_normal(mean_val, std_deviation)
     cdef int mutation_pos_int = _clip_to_int(mutation_pos_double, DEFAULT_WIDTH - 1, 0)
-    print(mutation_pos_int)
 
     for i in range(NUMBER_OF_MUTANTS - 1):
         new_variant = _create_mutant(random_seq, mutation_pos_int)
@@ -105,20 +120,67 @@ cdef _generate_random_clones():
     return clones
 
 
-cdef _simulate_read():
-    return
+cdef _simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):
+    """
+    Given a sequence and a alignment and sequencing error, generate a mimic of a oxford nanopore read
+    - Tested on: Mac
+    """
+    cdef int[DEFAULT_WIDTH] sim_read
+    cdef int pointer = 0
+    cdef double second_alignment_error_prob = alignment_error_prob / 5  # Guess work
+    cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work
+    cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work
+    for i in range(DEFAULT_WIDTH):
+        alignment = _draw_from_uniform()
+        direction = _draw_pos_neg()
+        if alignment <= forth_alignment_error_prob:
+            pointer += direction * 4
+        elif alignment <= third_alignment_error_prob:
+            pointer += direction * 3
+        elif alignment <= second_alignment_error_prob:
+            pointer += direction * 2
+        elif alignment <=  alignment_error_prob:
+            pointer += direction
+
+        if pointer < 0 or pointer >= DEFAULT_WIDTH:
+            sim_read[i] = _get_random_int(4)
+        else:
+            sequencing = _draw_from_uniform()
+            if sequencing < sequencing_error_prob:
+                current = clone_seq[pointer]
+                choice_array = [0, 1, 2, 3]
+                choice_array.remove(current)
+                clone_seq[pointer] = choice_array[_get_random_int(3)]
+            
+            sim_read[i] = clone_seq[pointer]
+        
+        pointer += 1
+    return sim_read
 
 
-def simulate_read():
-    return _simulate_read()
+def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):
+    return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)
 
 
 def generate_random_clones():
     return _generate_random_clones()
 
 
-def generate_data_for_noise_reduction():
-    return _generate_random_clones()
+def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):
+    noisy_images = []
+    clean_images = []
+    all_mutation_positions = []
+    for _ in range(sample_size):
+        clones = _generate_random_clones()
+        noisy = []
+        clean = []
+        for clone_type in range(DEFAULT_HEIGHT):
+            clone_index = _get_random_int(NUMBER_OF_MUTANTS)
+            clean.append(clones[clone_index].copy())
+            noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+        noisy_images.append(noisy)
+        clean_images.append(clean)
+    return noisy_images, clean_images
 
 
 def test_function_output():

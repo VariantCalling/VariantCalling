@@ -3,7 +3,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 HEIGHT = 100
 WIDTH = 178
@@ -81,7 +81,7 @@ class VariantCallingDataMini(VariantCalling):
         clean_images = []
         all_mutation_positions = []
 
-        for _ in tqdm(range(sample_size)):
+        for _ in range(sample_size):
             self.generate_random_clones()
             noisy = []
             clean = []
