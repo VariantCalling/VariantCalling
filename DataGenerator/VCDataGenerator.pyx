@@ -183,6 +183,21 @@ def generate_data_for_noise_reduction(int sample_size, double alignment_error_pr
     return noisy_images, clean_images
 
 
+def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):
+    ref_seq = []
+    inp_seq = []
+    labels = []
+    for _ in range(sample_size):
+        clones = _generate_random_clones()
+        for clone_type in range(DEFAULT_HEIGHT):
+            clone_index = _get_random_int(NUMBER_OF_MUTANTS)
+            for i in range(NUMBER_OF_MUTANTS):
+                ref_seq.append(clones[i])
+                inp_seq.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+                labels.append(clone_index == i)
+    return ref_seq, inp_seq, labels
+
+
 def test_function_output():
     cdef int random_int = _get_random_int(4)
     cdef double random_uniform = _draw_from_uniform()
