@@ -1,21 +1,10 @@
 # Import keras and other libraries
 import keras
-from keras.layers import Input, Embedding, Dense, Lambda, LayerNormalization, Dropout
+from keras.layers import Input, Embedding, Dense, Lambda, LayerNormalization, Dropout, Conv2D, MaxPooling2D, Activation, Flatten
 from keras.models import Model
 from keras.optimizers import Adam
 import numpy as np
 import tensorflow as tf
-import pandas as pd
-import random
-import PickleUtil as PU
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Dense, Dropout, Activation, Flatten, Lambda
-from keras.utils import to_categorical
-import VariantCalling as vc
-import numpy as np
-import matplotlib.pyplot as plt
-import gc
 
 # Define a custom Transformer layer
 class Transformer(keras.layers.Layer):
