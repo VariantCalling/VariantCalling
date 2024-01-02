@@ -18,7 +18,17 @@ class PickleLoader:
 
     def load_pickle(self):
         """
-        This function serves to load the pickle as defined during the initialisation
+        This function serves to load the pickle as defined during the initialisation.
+        The pickle files are loaded into a 2-D array in the order of [clones]
+
+        For example, if clones=["7G8","DD2"], the clones_sequence will be of size [2,],
+        where clones_sequence[0,] will be the silo for 7G8 reads
+        while clones_sequence[1,] will be the silo for DD2 reads.
+
+        Returns
+        -------
+        list
+            List of reads loaded from the Pickle files arranged in the order of [clones]
         """
         clones_sequence = []
         for clone in self.clones:
