@@ -34,7 +34,7 @@ class VariantCallingData(VariantCalling):
     def __init__(self, 
                  mutation_labels={"no_SNP": 0, "heterozygous_SNP": 1, "homozygous_SNP": 2},
                  mutation_types_names={0: "No mutation", 1: "Heterozygous SNP", 2: "Homozygous SNP"},
-                 file_name="clones.txt",
+                 file_name="clones_lib/crt_clones.txt",
                  gen_mode=1,
                  pkl_sequence="CRT",
                  pkl_clones=["3D7"]
