@@ -120,3 +120,18 @@ class VariantCallingDataMini(VariantCalling):
         self.clones = clones
         self.mutation_positions = list(mutation_positions)
         return clones, mutation_positions
+
+    def generate_data_for_comparator(self, sample_size=1000, image_height=HEIGHT, alignment_error_prob=0.05, sequencing_error_prob=0.05):
+        """Function which returns reference, input sequences and labels"""
+
+        ref_seq = []
+        inp_seq = []
+        labels = []
+        for _ in range(sample_size):
+            random_array = np.random.randint(len(self.clones), size=image_height)
+            for clone_type in random_array:
+                for i in range(len(self.clones)):
+                    ref_seq.append(self.char_to_int(self.clones[i]))
+                    inp_seq.append(self._simulate_read(clone_type, alignment_error_prob, sequencing_error_prob))
+                    labels.append(int(clone_type == i))
+        return ref_seq, inp_seq, labels
