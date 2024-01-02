@@ -1,3 +1,12 @@
+"""
+TransformerComparator.py
+
+Constructor of a Transformer-based comparator for long-sequence read genetic data.
+
+The model is a generic model inspired by both Siamese network and the original paper on Transformer (Attention is all you need).
+
+Most of the variables in this file are hardcoded, consider convert to input arguments for flexibility
+"""
 # Import keras and other libraries
 import keras
 from keras.layers import Input, Embedding, Dense, Lambda, LayerNormalization, Dropout, Conv2D, MaxPooling2D, Activation, Flatten
@@ -37,7 +46,10 @@ class Transformer(keras.layers.Layer):
         return ffn_output
 
 class SaveBestModel(tf.keras.callbacks.Callback):
-    def __init__(self, save_best_metric='val_accuracy', this_max=False):
+    """
+    Keras Callback to save the best performing model
+    """
+    def __init__(self, save_best_metric='val_mse', this_max=False):
         self.save_best_metric = save_best_metric
         self.max = this_max
         if this_max:
@@ -58,9 +70,15 @@ class SaveBestModel(tf.keras.callbacks.Callback):
                 self.best_weights= self.model.get_weights()
 
 def transformer_model():
+    """
+    Returns
+    -------
+    Keras Model :
+        Keras model of the Transformer-based comparator
+    """
     # Define the vocabulary size and the embedding dimension
     vocab_size = 4 # A, T, C, G
-    embed_dim = 64    
+    embed_dim = 32
 
     # Define the input sequences
     ref_input = Input(shape=(178,), dtype='int32', name='ref_input')
@@ -71,23 +89,24 @@ def transformer_model():
     inp_embed = Embedding(vocab_size, embed_dim, name='inp_embed')(inp_input)
 
     # Apply the transformer layer to encode the input sequences
-    transformer = Transformer(num_heads=2, dim_feedforward=64, dropout_rate=0.1,embed_dim=embed_dim, name='transformer')
+    transformer = Transformer(num_heads=12, dim_feedforward=32, dropout_rate=0.1,embed_dim=embed_dim, name='transformer')
     ref_encoded = transformer(ref_embed)
     inp_encoded = transformer(inp_embed)
     # Compute the cosine similarity between the encoded sequences
     cosine_similarity = Lambda(lambda x: tf.keras.losses.cosine_similarity(x[0], x[1], axis=-1), name='cosine_similarity')([ref_encoded, inp_encoded])    
 
     # Add some FF laters    
-    deep1 = Dense(32, activation='relu', name='deep1')(cosine_similarity)
-    deep2 = Dense(32, activation='relu', name='deep2')(deep1)
-    deep3 = Dense(32, activation='relu', name='deep3')(deep2)    
+    deep1 = Dense(64, activation='relu', name='deep1')(cosine_similarity)
+    deep2 = Dense(64, activation='relu', name='deep2')(deep1)
+    #deep3 = Dense(128, activation='relu', name='deep3')(deep2)  
+    #deep4 = Dense(128, activation='relu', name='deep4')(deep3)    
 
     # Define the output layer
-    output = Dense(1, activation='sigmoid', name='output')(deep3)    
+    output = Dense(1, activation='sigmoid', name='output')(deep2)    
 
     # Define the model
     model = Model(inputs=(ref_input, inp_input), outputs=output, name='comparator')    
 
     # Compile the model
-    model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['mse'])
     return model
