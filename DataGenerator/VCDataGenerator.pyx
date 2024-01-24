@@ -158,6 +158,49 @@ cdef _simulate_read(list clone_seq, double alignment_error_prob, double sequenci
     return sim_read
 
 
+cdef _simulate_read_varying_prob(list clone_seq, double alignment_error_prob_mean, double sequencing_error_prob_mean):
+    """
+    Given a sequence and a alignment and sequencing error, generate a mimic of a oxford nanopore read.
+    This is different to the other function where the alignment error prob and sequencing error prob is vary as a
+    gaussian. Where the use of a Gaussian with a std found by trial and eror is an assumption. The probability input here represent
+    the mean error probability.
+    - Tested on: Mac
+    """
+    cdef double alignment_error_prob = _draw_from_normal(alignment_error_prob_mean, alignment_error_prob_mean / 1.3)  # we dont need to threshold this in theory
+    cdef double sequencing_error_prob = _draw_from_normal(sequencing_error_prob_mean, alignment_error_prob_mean / 1.3)
+    
+    cdef int[DEFAULT_WIDTH] sim_read
+    cdef int pointer = 0
+    cdef double second_alignment_error_prob = alignment_error_prob / 5  # Guess work
+    cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work
+    cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work
+    for i in range(DEFAULT_WIDTH):
+        alignment = _draw_from_uniform()
+        direction = _draw_pos_neg()
+        if alignment <= forth_alignment_error_prob:
+            pointer += direction * 4
+        elif alignment <= third_alignment_error_prob:
+            pointer += direction * 3
+        elif alignment <= second_alignment_error_prob:
+            pointer += direction * 2
+        elif alignment <=  alignment_error_prob:
+            pointer += direction
+
+        if pointer < 0 or pointer >= DEFAULT_WIDTH:
+            sim_read[i] = _get_random_int(4)
+        else:
+            sequencing = _draw_from_uniform()
+            if sequencing < sequencing_error_prob:
+                current = clone_seq[pointer]
+                choice_array = [0, 1, 2, 3]
+                choice_array.remove(current)
+                clone_seq[pointer] = choice_array[_get_random_int(3)]
+            
+            sim_read[i] = clone_seq[pointer]
+        
+        pointer += 1
+    return sim_read
+
 def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):
     return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)
 
@@ -177,7 +220,7 @@ def generate_data_for_noise_reduction(int sample_size, double alignment_error_pr
         for clone_type in range(DEFAULT_HEIGHT):
             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
             clean.append(clones[clone_index].copy())
-            noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+            noisy.append(_simulate_read_varying_prob(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))  # this should work on _simulate_read(*params) as well
         noisy_images.append(noisy)
         clean_images.append(clean)
     return noisy_images, clean_images

@@ -2161,6 +2161,7 @@ static PyObject *__pyx_f_15VCDataGenerator__create_mutant(PyObject *, int); /*pr
 static PyObject *__pyx_f_15VCDataGenerator__generate_random_sequence(void); /*proto*/
 static PyObject *__pyx_f_15VCDataGenerator__generate_random_clones(void); /*proto*/
 static PyObject *__pyx_f_15VCDataGenerator__simulate_read(PyObject *, double, double); /*proto*/
+static PyObject *__pyx_f_15VCDataGenerator__simulate_read_varying_prob(PyObject *, double, double); /*proto*/
 static CYTHON_INLINE PyObject *__Pyx_carray_to_py_int(int *, Py_ssize_t); /*proto*/
 static CYTHON_INLINE PyObject *__Pyx_carray_to_tuple_int(int *, Py_ssize_t); /*proto*/
 static int __Pyx_carray_from_py_int(PyObject *, int *, Py_ssize_t); /*proto*/
@@ -2184,8 +2185,9 @@ static const char __pyx_k_A[] = "A";
 static const char __pyx_k_C[] = "C";
 static const char __pyx_k_G[] = "G";
 static const char __pyx_k_T[] = "T";
+static const char __pyx_k_i[] = "i";
 static const char __pyx_k__4[] = "_";
-static const char __pyx_k__9[] = "?";
+static const char __pyx_k__11[] = "?";
 static const char __pyx_k_copy[] = "copy";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -2194,7 +2196,10 @@ static const char __pyx_k_clean[] = "clean";
 static const char __pyx_k_noisy[] = "noisy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_clones[] = "clones";
+static const char __pyx_k_labels[] = "labels";
 static const char __pyx_k_remove[] = "remove";
+static const char __pyx_k_inp_seq[] = "inp_seq";
+static const char __pyx_k_ref_seq[] = "ref_seq";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_clone_seq[] = "clone_seq";
 static const char __pyx_k_enumerate[] = "enumerate";
@@ -2219,12 +2224,14 @@ static const char __pyx_k_test_function_output[] = "test_function_output";
 static const char __pyx_k_sequencing_error_prob[] = "sequencing_error_prob";
 static const char __pyx_k_all_mutation_positions[] = "all_mutation_positions";
 static const char __pyx_k_generate_random_clones[] = "generate_random_clones";
+static const char __pyx_k_generate_data_for_comparator[] = "generate_data_for_comparator";
 static const char __pyx_k_generate_data_for_noise_reductio[] = "generate_data_for_noise_reduction";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_15VCDataGenerator_simulate_read(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_clone_seq, double __pyx_v_alignment_error_prob, double __pyx_v_sequencing_error_prob); /* proto */
 static PyObject *__pyx_pf_15VCDataGenerator_2generate_random_clones(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
 static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_sample_size, double __pyx_v_alignment_error_prob, double __pyx_v_sequencing_error_prob); /* proto */
-static PyObject *__pyx_pf_15VCDataGenerator_6test_function_output(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_15VCDataGenerator_6generate_data_for_comparator(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_sample_size, double __pyx_v_alignment_error_prob, double __pyx_v_sequencing_error_prob); /* proto */
+static PyObject *__pyx_pf_15VCDataGenerator_8test_function_output(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_remove = {0, 0, 0, 0, 0};
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
@@ -2274,8 +2281,8 @@ typedef struct {
   PyObject *__pyx_n_s_TypeError;
   PyObject *__pyx_n_s_VCDataGenerator;
   PyObject *__pyx_kp_s_VCDataGenerator_pyx;
+  PyObject *__pyx_n_s__11;
   PyObject *__pyx_n_s__4;
-  PyObject *__pyx_n_s__9;
   PyObject *__pyx_n_s_alignment_error_prob;
   PyObject *__pyx_n_s_all_mutation_positions;
   PyObject *__pyx_n_s_asyncio_coroutines;
@@ -2288,9 +2295,13 @@ typedef struct {
   PyObject *__pyx_n_s_clones;
   PyObject *__pyx_n_s_copy;
   PyObject *__pyx_n_s_enumerate;
+  PyObject *__pyx_n_s_generate_data_for_comparator;
   PyObject *__pyx_n_s_generate_data_for_noise_reductio;
   PyObject *__pyx_n_s_generate_random_clones;
+  PyObject *__pyx_n_s_i;
+  PyObject *__pyx_n_s_inp_seq;
   PyObject *__pyx_n_s_is_coroutine;
+  PyObject *__pyx_n_s_labels;
   PyObject *__pyx_n_s_main;
   PyObject *__pyx_n_s_name;
   PyObject *__pyx_n_s_noisy;
@@ -2299,6 +2310,7 @@ typedef struct {
   PyObject *__pyx_n_s_random_normal;
   PyObject *__pyx_n_s_random_uniform;
   PyObject *__pyx_n_s_range;
+  PyObject *__pyx_n_s_ref_seq;
   PyObject *__pyx_n_s_remove;
   PyObject *__pyx_n_s_sample_size;
   PyObject *__pyx_n_s_sequencing_error_prob;
@@ -2313,10 +2325,12 @@ typedef struct {
   PyObject *__pyx_tuple_;
   PyObject *__pyx_tuple__5;
   PyObject *__pyx_tuple__7;
+  PyObject *__pyx_tuple__9;
   PyObject *__pyx_codeobj__2;
   PyObject *__pyx_codeobj__3;
   PyObject *__pyx_codeobj__6;
   PyObject *__pyx_codeobj__8;
+  PyObject *__pyx_codeobj__10;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2368,8 +2382,8 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_TypeError);
   Py_CLEAR(clear_module_state->__pyx_n_s_VCDataGenerator);
   Py_CLEAR(clear_module_state->__pyx_kp_s_VCDataGenerator_pyx);
+  Py_CLEAR(clear_module_state->__pyx_n_s__11);
   Py_CLEAR(clear_module_state->__pyx_n_s__4);
-  Py_CLEAR(clear_module_state->__pyx_n_s__9);
   Py_CLEAR(clear_module_state->__pyx_n_s_alignment_error_prob);
   Py_CLEAR(clear_module_state->__pyx_n_s_all_mutation_positions);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
@@ -2382,9 +2396,13 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_clones);
   Py_CLEAR(clear_module_state->__pyx_n_s_copy);
   Py_CLEAR(clear_module_state->__pyx_n_s_enumerate);
+  Py_CLEAR(clear_module_state->__pyx_n_s_generate_data_for_comparator);
   Py_CLEAR(clear_module_state->__pyx_n_s_generate_data_for_noise_reductio);
   Py_CLEAR(clear_module_state->__pyx_n_s_generate_random_clones);
+  Py_CLEAR(clear_module_state->__pyx_n_s_i);
+  Py_CLEAR(clear_module_state->__pyx_n_s_inp_seq);
   Py_CLEAR(clear_module_state->__pyx_n_s_is_coroutine);
+  Py_CLEAR(clear_module_state->__pyx_n_s_labels);
   Py_CLEAR(clear_module_state->__pyx_n_s_main);
   Py_CLEAR(clear_module_state->__pyx_n_s_name);
   Py_CLEAR(clear_module_state->__pyx_n_s_noisy);
@@ -2393,6 +2411,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_random_normal);
   Py_CLEAR(clear_module_state->__pyx_n_s_random_uniform);
   Py_CLEAR(clear_module_state->__pyx_n_s_range);
+  Py_CLEAR(clear_module_state->__pyx_n_s_ref_seq);
   Py_CLEAR(clear_module_state->__pyx_n_s_remove);
   Py_CLEAR(clear_module_state->__pyx_n_s_sample_size);
   Py_CLEAR(clear_module_state->__pyx_n_s_sequencing_error_prob);
@@ -2407,10 +2426,12 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_tuple_);
   Py_CLEAR(clear_module_state->__pyx_tuple__5);
   Py_CLEAR(clear_module_state->__pyx_tuple__7);
+  Py_CLEAR(clear_module_state->__pyx_tuple__9);
   Py_CLEAR(clear_module_state->__pyx_codeobj__2);
   Py_CLEAR(clear_module_state->__pyx_codeobj__3);
   Py_CLEAR(clear_module_state->__pyx_codeobj__6);
   Py_CLEAR(clear_module_state->__pyx_codeobj__8);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__10);
   return 0;
 }
 #endif
@@ -2440,8 +2461,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_TypeError);
   Py_VISIT(traverse_module_state->__pyx_n_s_VCDataGenerator);
   Py_VISIT(traverse_module_state->__pyx_kp_s_VCDataGenerator_pyx);
+  Py_VISIT(traverse_module_state->__pyx_n_s__11);
   Py_VISIT(traverse_module_state->__pyx_n_s__4);
-  Py_VISIT(traverse_module_state->__pyx_n_s__9);
   Py_VISIT(traverse_module_state->__pyx_n_s_alignment_error_prob);
   Py_VISIT(traverse_module_state->__pyx_n_s_all_mutation_positions);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
@@ -2454,9 +2475,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_clones);
   Py_VISIT(traverse_module_state->__pyx_n_s_copy);
   Py_VISIT(traverse_module_state->__pyx_n_s_enumerate);
+  Py_VISIT(traverse_module_state->__pyx_n_s_generate_data_for_comparator);
   Py_VISIT(traverse_module_state->__pyx_n_s_generate_data_for_noise_reductio);
   Py_VISIT(traverse_module_state->__pyx_n_s_generate_random_clones);
+  Py_VISIT(traverse_module_state->__pyx_n_s_i);
+  Py_VISIT(traverse_module_state->__pyx_n_s_inp_seq);
   Py_VISIT(traverse_module_state->__pyx_n_s_is_coroutine);
+  Py_VISIT(traverse_module_state->__pyx_n_s_labels);
   Py_VISIT(traverse_module_state->__pyx_n_s_main);
   Py_VISIT(traverse_module_state->__pyx_n_s_name);
   Py_VISIT(traverse_module_state->__pyx_n_s_noisy);
@@ -2465,6 +2490,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_random_normal);
   Py_VISIT(traverse_module_state->__pyx_n_s_random_uniform);
   Py_VISIT(traverse_module_state->__pyx_n_s_range);
+  Py_VISIT(traverse_module_state->__pyx_n_s_ref_seq);
   Py_VISIT(traverse_module_state->__pyx_n_s_remove);
   Py_VISIT(traverse_module_state->__pyx_n_s_sample_size);
   Py_VISIT(traverse_module_state->__pyx_n_s_sequencing_error_prob);
@@ -2479,10 +2505,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_tuple_);
   Py_VISIT(traverse_module_state->__pyx_tuple__5);
   Py_VISIT(traverse_module_state->__pyx_tuple__7);
+  Py_VISIT(traverse_module_state->__pyx_tuple__9);
   Py_VISIT(traverse_module_state->__pyx_codeobj__2);
   Py_VISIT(traverse_module_state->__pyx_codeobj__3);
   Py_VISIT(traverse_module_state->__pyx_codeobj__6);
   Py_VISIT(traverse_module_state->__pyx_codeobj__8);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__10);
   return 0;
 }
 #endif
@@ -2532,8 +2560,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_TypeError __pyx_mstate_global->__pyx_n_s_TypeError
 #define __pyx_n_s_VCDataGenerator __pyx_mstate_global->__pyx_n_s_VCDataGenerator
 #define __pyx_kp_s_VCDataGenerator_pyx __pyx_mstate_global->__pyx_kp_s_VCDataGenerator_pyx
+#define __pyx_n_s__11 __pyx_mstate_global->__pyx_n_s__11
 #define __pyx_n_s__4 __pyx_mstate_global->__pyx_n_s__4
-#define __pyx_n_s__9 __pyx_mstate_global->__pyx_n_s__9
 #define __pyx_n_s_alignment_error_prob __pyx_mstate_global->__pyx_n_s_alignment_error_prob
 #define __pyx_n_s_all_mutation_positions __pyx_mstate_global->__pyx_n_s_all_mutation_positions
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
@@ -2546,9 +2574,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_clones __pyx_mstate_global->__pyx_n_s_clones
 #define __pyx_n_s_copy __pyx_mstate_global->__pyx_n_s_copy
 #define __pyx_n_s_enumerate __pyx_mstate_global->__pyx_n_s_enumerate
+#define __pyx_n_s_generate_data_for_comparator __pyx_mstate_global->__pyx_n_s_generate_data_for_comparator
 #define __pyx_n_s_generate_data_for_noise_reductio __pyx_mstate_global->__pyx_n_s_generate_data_for_noise_reductio
 #define __pyx_n_s_generate_random_clones __pyx_mstate_global->__pyx_n_s_generate_random_clones
+#define __pyx_n_s_i __pyx_mstate_global->__pyx_n_s_i
+#define __pyx_n_s_inp_seq __pyx_mstate_global->__pyx_n_s_inp_seq
 #define __pyx_n_s_is_coroutine __pyx_mstate_global->__pyx_n_s_is_coroutine
+#define __pyx_n_s_labels __pyx_mstate_global->__pyx_n_s_labels
 #define __pyx_n_s_main __pyx_mstate_global->__pyx_n_s_main
 #define __pyx_n_s_name __pyx_mstate_global->__pyx_n_s_name
 #define __pyx_n_s_noisy __pyx_mstate_global->__pyx_n_s_noisy
@@ -2557,6 +2589,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_random_normal __pyx_mstate_global->__pyx_n_s_random_normal
 #define __pyx_n_s_random_uniform __pyx_mstate_global->__pyx_n_s_random_uniform
 #define __pyx_n_s_range __pyx_mstate_global->__pyx_n_s_range
+#define __pyx_n_s_ref_seq __pyx_mstate_global->__pyx_n_s_ref_seq
 #define __pyx_n_s_remove __pyx_mstate_global->__pyx_n_s_remove
 #define __pyx_n_s_sample_size __pyx_mstate_global->__pyx_n_s_sample_size
 #define __pyx_n_s_sequencing_error_prob __pyx_mstate_global->__pyx_n_s_sequencing_error_prob
@@ -2571,10 +2604,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_tuple_ __pyx_mstate_global->__pyx_tuple_
 #define __pyx_tuple__5 __pyx_mstate_global->__pyx_tuple__5
 #define __pyx_tuple__7 __pyx_mstate_global->__pyx_tuple__7
+#define __pyx_tuple__9 __pyx_mstate_global->__pyx_tuple__9
 #define __pyx_codeobj__2 __pyx_mstate_global->__pyx_codeobj__2
 #define __pyx_codeobj__3 __pyx_mstate_global->__pyx_codeobj__3
 #define __pyx_codeobj__6 __pyx_mstate_global->__pyx_codeobj__6
 #define __pyx_codeobj__8 __pyx_mstate_global->__pyx_codeobj__8
+#define __pyx_codeobj__10 __pyx_mstate_global->__pyx_codeobj__10
 /* #### Code section: module_code ### */
 
 /* "carray.to_py":114
@@ -4554,6 +4589,488 @@ static PyObject *__pyx_f_15VCDataGenerator__simulate_read(PyObject *__pyx_v_clon
 /* "VCDataGenerator.pyx":161
  * 
  * 
+ * cdef _simulate_read_varying_prob(list clone_seq, double alignment_error_prob_mean, double sequencing_error_prob_mean):             # <<<<<<<<<<<<<<
+ *     """
+ *     Given a sequence and a alignment and sequencing error, generate a mimic of a oxford nanopore read.
+ */
+
+static PyObject *__pyx_f_15VCDataGenerator__simulate_read_varying_prob(PyObject *__pyx_v_clone_seq, double __pyx_v_alignment_error_prob_mean, double __pyx_v_sequencing_error_prob_mean) {
+  double __pyx_v_alignment_error_prob;
+  double __pyx_v_sequencing_error_prob;
+  int __pyx_v_sim_read[0xB2];
+  int __pyx_v_pointer;
+  double __pyx_v_second_alignment_error_prob;
+  double __pyx_v_third_alignment_error_prob;
+  double __pyx_v_forth_alignment_error_prob;
+  long __pyx_v_i;
+  double __pyx_v_alignment;
+  PyObject *__pyx_v_direction = NULL;
+  double __pyx_v_sequencing;
+  PyObject *__pyx_v_current = NULL;
+  PyObject *__pyx_v_choice_array = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  long __pyx_t_2;
+  int __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_simulate_read_varying_prob", 1);
+
+  /* "VCDataGenerator.pyx":169
+ *     - Tested on: Mac
+ *     """
+ *     cdef double alignment_error_prob = _draw_from_normal(alignment_error_prob_mean, alignment_error_prob_mean / 1.3)  # we dont need to threshold this in theory             # <<<<<<<<<<<<<<
+ *     cdef double sequencing_error_prob = _draw_from_normal(sequencing_error_prob_mean, alignment_error_prob_mean / 1.3)
+ * 
+ */
+  __pyx_t_1 = __pyx_f_15VCDataGenerator__draw_from_normal(__pyx_v_alignment_error_prob_mean, (__pyx_v_alignment_error_prob_mean / 1.3)); if (unlikely(__pyx_t_1 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_v_alignment_error_prob = __pyx_t_1;
+
+  /* "VCDataGenerator.pyx":170
+ *     """
+ *     cdef double alignment_error_prob = _draw_from_normal(alignment_error_prob_mean, alignment_error_prob_mean / 1.3)  # we dont need to threshold this in theory
+ *     cdef double sequencing_error_prob = _draw_from_normal(sequencing_error_prob_mean, alignment_error_prob_mean / 1.3)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int[DEFAULT_WIDTH] sim_read
+ */
+  __pyx_t_1 = __pyx_f_15VCDataGenerator__draw_from_normal(__pyx_v_sequencing_error_prob_mean, (__pyx_v_alignment_error_prob_mean / 1.3)); if (unlikely(__pyx_t_1 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_v_sequencing_error_prob = __pyx_t_1;
+
+  /* "VCDataGenerator.pyx":173
+ * 
+ *     cdef int[DEFAULT_WIDTH] sim_read
+ *     cdef int pointer = 0             # <<<<<<<<<<<<<<
+ *     cdef double second_alignment_error_prob = alignment_error_prob / 5  # Guess work
+ *     cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work
+ */
+  __pyx_v_pointer = 0;
+
+  /* "VCDataGenerator.pyx":174
+ *     cdef int[DEFAULT_WIDTH] sim_read
+ *     cdef int pointer = 0
+ *     cdef double second_alignment_error_prob = alignment_error_prob / 5  # Guess work             # <<<<<<<<<<<<<<
+ *     cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work
+ *     cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work
+ */
+  __pyx_v_second_alignment_error_prob = (__pyx_v_alignment_error_prob / 5.0);
+
+  /* "VCDataGenerator.pyx":175
+ *     cdef int pointer = 0
+ *     cdef double second_alignment_error_prob = alignment_error_prob / 5  # Guess work
+ *     cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work             # <<<<<<<<<<<<<<
+ *     cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work
+ *     for i in range(DEFAULT_WIDTH):
+ */
+  __pyx_v_third_alignment_error_prob = (__pyx_v_alignment_error_prob / 8.0);
+
+  /* "VCDataGenerator.pyx":176
+ *     cdef double second_alignment_error_prob = alignment_error_prob / 5  # Guess work
+ *     cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work
+ *     cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work             # <<<<<<<<<<<<<<
+ *     for i in range(DEFAULT_WIDTH):
+ *         alignment = _draw_from_uniform()
+ */
+  __pyx_v_forth_alignment_error_prob = (__pyx_v_alignment_error_prob / 15.0);
+
+  /* "VCDataGenerator.pyx":177
+ *     cdef double third_alignment_error_prob = alignment_error_prob / 8  # Guess work
+ *     cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work
+ *     for i in range(DEFAULT_WIDTH):             # <<<<<<<<<<<<<<
+ *         alignment = _draw_from_uniform()
+ *         direction = _draw_pos_neg()
+ */
+  for (__pyx_t_2 = 0; __pyx_t_2 < 0xB2; __pyx_t_2+=1) {
+    __pyx_v_i = __pyx_t_2;
+
+    /* "VCDataGenerator.pyx":178
+ *     cdef double forth_alignment_error_prob = alignment_error_prob / 15  # Guess work
+ *     for i in range(DEFAULT_WIDTH):
+ *         alignment = _draw_from_uniform()             # <<<<<<<<<<<<<<
+ *         direction = _draw_pos_neg()
+ *         if alignment <= forth_alignment_error_prob:
+ */
+    __pyx_t_1 = __pyx_f_15VCDataGenerator__draw_from_uniform(); if (unlikely(__pyx_t_1 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
+    __pyx_v_alignment = __pyx_t_1;
+
+    /* "VCDataGenerator.pyx":179
+ *     for i in range(DEFAULT_WIDTH):
+ *         alignment = _draw_from_uniform()
+ *         direction = _draw_pos_neg()             # <<<<<<<<<<<<<<
+ *         if alignment <= forth_alignment_error_prob:
+ *             pointer += direction * 4
+ */
+    __pyx_t_3 = __pyx_f_15VCDataGenerator__draw_pos_neg(); if (unlikely(__pyx_t_3 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_XDECREF_SET(__pyx_v_direction, __pyx_t_4);
+    __pyx_t_4 = 0;
+
+    /* "VCDataGenerator.pyx":180
+ *         alignment = _draw_from_uniform()
+ *         direction = _draw_pos_neg()
+ *         if alignment <= forth_alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction * 4
+ *         elif alignment <= third_alignment_error_prob:
+ */
+    __pyx_t_5 = (__pyx_v_alignment <= __pyx_v_forth_alignment_error_prob);
+    if (__pyx_t_5) {
+
+      /* "VCDataGenerator.pyx":181
+ *         direction = _draw_pos_neg()
+ *         if alignment <= forth_alignment_error_prob:
+ *             pointer += direction * 4             # <<<<<<<<<<<<<<
+ *         elif alignment <= third_alignment_error_prob:
+ *             pointer += direction * 3
+ */
+      __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_pointer); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 181, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_6 = __Pyx_PyInt_MultiplyObjC(__pyx_v_direction, __pyx_int_4, 4, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 181, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 181, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_v_pointer = __pyx_t_3;
+
+      /* "VCDataGenerator.pyx":180
+ *         alignment = _draw_from_uniform()
+ *         direction = _draw_pos_neg()
+ *         if alignment <= forth_alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction * 4
+ *         elif alignment <= third_alignment_error_prob:
+ */
+      goto __pyx_L5;
+    }
+
+    /* "VCDataGenerator.pyx":182
+ *         if alignment <= forth_alignment_error_prob:
+ *             pointer += direction * 4
+ *         elif alignment <= third_alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction * 3
+ *         elif alignment <= second_alignment_error_prob:
+ */
+    __pyx_t_5 = (__pyx_v_alignment <= __pyx_v_third_alignment_error_prob);
+    if (__pyx_t_5) {
+
+      /* "VCDataGenerator.pyx":183
+ *             pointer += direction * 4
+ *         elif alignment <= third_alignment_error_prob:
+ *             pointer += direction * 3             # <<<<<<<<<<<<<<
+ *         elif alignment <= second_alignment_error_prob:
+ *             pointer += direction * 2
+ */
+      __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_pointer); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 183, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_6 = __Pyx_PyInt_MultiplyObjC(__pyx_v_direction, __pyx_int_3, 3, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 183, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 183, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_v_pointer = __pyx_t_3;
+
+      /* "VCDataGenerator.pyx":182
+ *         if alignment <= forth_alignment_error_prob:
+ *             pointer += direction * 4
+ *         elif alignment <= third_alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction * 3
+ *         elif alignment <= second_alignment_error_prob:
+ */
+      goto __pyx_L5;
+    }
+
+    /* "VCDataGenerator.pyx":184
+ *         elif alignment <= third_alignment_error_prob:
+ *             pointer += direction * 3
+ *         elif alignment <= second_alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction * 2
+ *         elif alignment <=  alignment_error_prob:
+ */
+    __pyx_t_5 = (__pyx_v_alignment <= __pyx_v_second_alignment_error_prob);
+    if (__pyx_t_5) {
+
+      /* "VCDataGenerator.pyx":185
+ *             pointer += direction * 3
+ *         elif alignment <= second_alignment_error_prob:
+ *             pointer += direction * 2             # <<<<<<<<<<<<<<
+ *         elif alignment <=  alignment_error_prob:
+ *             pointer += direction
+ */
+      __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_pointer); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_6 = __Pyx_PyInt_MultiplyObjC(__pyx_v_direction, __pyx_int_2, 2, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 185, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 185, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 185, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_v_pointer = __pyx_t_3;
+
+      /* "VCDataGenerator.pyx":184
+ *         elif alignment <= third_alignment_error_prob:
+ *             pointer += direction * 3
+ *         elif alignment <= second_alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction * 2
+ *         elif alignment <=  alignment_error_prob:
+ */
+      goto __pyx_L5;
+    }
+
+    /* "VCDataGenerator.pyx":186
+ *         elif alignment <= second_alignment_error_prob:
+ *             pointer += direction * 2
+ *         elif alignment <=  alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction
+ * 
+ */
+    __pyx_t_5 = (__pyx_v_alignment <= __pyx_v_alignment_error_prob);
+    if (__pyx_t_5) {
+
+      /* "VCDataGenerator.pyx":187
+ *             pointer += direction * 2
+ *         elif alignment <=  alignment_error_prob:
+ *             pointer += direction             # <<<<<<<<<<<<<<
+ * 
+ *         if pointer < 0 or pointer >= DEFAULT_WIDTH:
+ */
+      __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_pointer); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 187, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_6 = PyNumber_InPlaceAdd(__pyx_t_7, __pyx_v_direction); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 187, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __pyx_v_pointer = __pyx_t_3;
+
+      /* "VCDataGenerator.pyx":186
+ *         elif alignment <= second_alignment_error_prob:
+ *             pointer += direction * 2
+ *         elif alignment <=  alignment_error_prob:             # <<<<<<<<<<<<<<
+ *             pointer += direction
+ * 
+ */
+    }
+    __pyx_L5:;
+
+    /* "VCDataGenerator.pyx":189
+ *             pointer += direction
+ * 
+ *         if pointer < 0 or pointer >= DEFAULT_WIDTH:             # <<<<<<<<<<<<<<
+ *             sim_read[i] = _get_random_int(4)
+ *         else:
+ */
+    __pyx_t_8 = (__pyx_v_pointer < 0);
+    if (!__pyx_t_8) {
+    } else {
+      __pyx_t_5 = __pyx_t_8;
+      goto __pyx_L7_bool_binop_done;
+    }
+    __pyx_t_8 = (__pyx_v_pointer >= 0xB2);
+    __pyx_t_5 = __pyx_t_8;
+    __pyx_L7_bool_binop_done:;
+    if (__pyx_t_5) {
+
+      /* "VCDataGenerator.pyx":190
+ * 
+ *         if pointer < 0 or pointer >= DEFAULT_WIDTH:
+ *             sim_read[i] = _get_random_int(4)             # <<<<<<<<<<<<<<
+ *         else:
+ *             sequencing = _draw_from_uniform()
+ */
+      __pyx_t_3 = __pyx_f_15VCDataGenerator__get_random_int(4); if (unlikely(__pyx_t_3 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+      (__pyx_v_sim_read[__pyx_v_i]) = __pyx_t_3;
+
+      /* "VCDataGenerator.pyx":189
+ *             pointer += direction
+ * 
+ *         if pointer < 0 or pointer >= DEFAULT_WIDTH:             # <<<<<<<<<<<<<<
+ *             sim_read[i] = _get_random_int(4)
+ *         else:
+ */
+      goto __pyx_L6;
+    }
+
+    /* "VCDataGenerator.pyx":192
+ *             sim_read[i] = _get_random_int(4)
+ *         else:
+ *             sequencing = _draw_from_uniform()             # <<<<<<<<<<<<<<
+ *             if sequencing < sequencing_error_prob:
+ *                 current = clone_seq[pointer]
+ */
+    /*else*/ {
+      __pyx_t_1 = __pyx_f_15VCDataGenerator__draw_from_uniform(); if (unlikely(__pyx_t_1 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
+      __pyx_v_sequencing = __pyx_t_1;
+
+      /* "VCDataGenerator.pyx":193
+ *         else:
+ *             sequencing = _draw_from_uniform()
+ *             if sequencing < sequencing_error_prob:             # <<<<<<<<<<<<<<
+ *                 current = clone_seq[pointer]
+ *                 choice_array = [0, 1, 2, 3]
+ */
+      __pyx_t_5 = (__pyx_v_sequencing < __pyx_v_sequencing_error_prob);
+      if (__pyx_t_5) {
+
+        /* "VCDataGenerator.pyx":194
+ *             sequencing = _draw_from_uniform()
+ *             if sequencing < sequencing_error_prob:
+ *                 current = clone_seq[pointer]             # <<<<<<<<<<<<<<
+ *                 choice_array = [0, 1, 2, 3]
+ *                 choice_array.remove(current)
+ */
+        if (unlikely(__pyx_v_clone_seq == Py_None)) {
+          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+          __PYX_ERR(0, 194, __pyx_L1_error)
+        }
+        __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_clone_seq, __pyx_v_pointer, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 194, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_XDECREF_SET(__pyx_v_current, __pyx_t_6);
+        __pyx_t_6 = 0;
+
+        /* "VCDataGenerator.pyx":195
+ *             if sequencing < sequencing_error_prob:
+ *                 current = clone_seq[pointer]
+ *                 choice_array = [0, 1, 2, 3]             # <<<<<<<<<<<<<<
+ *                 choice_array.remove(current)
+ *                 clone_seq[pointer] = choice_array[_get_random_int(3)]
+ */
+        __pyx_t_6 = PyList_New(4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 195, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_INCREF(__pyx_int_0);
+        __Pyx_GIVEREF(__pyx_int_0);
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 0, __pyx_int_0)) __PYX_ERR(0, 195, __pyx_L1_error);
+        __Pyx_INCREF(__pyx_int_1);
+        __Pyx_GIVEREF(__pyx_int_1);
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 1, __pyx_int_1)) __PYX_ERR(0, 195, __pyx_L1_error);
+        __Pyx_INCREF(__pyx_int_2);
+        __Pyx_GIVEREF(__pyx_int_2);
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 2, __pyx_int_2)) __PYX_ERR(0, 195, __pyx_L1_error);
+        __Pyx_INCREF(__pyx_int_3);
+        __Pyx_GIVEREF(__pyx_int_3);
+        if (__Pyx_PyList_SET_ITEM(__pyx_t_6, 3, __pyx_int_3)) __PYX_ERR(0, 195, __pyx_L1_error);
+        __Pyx_XDECREF_SET(__pyx_v_choice_array, ((PyObject*)__pyx_t_6));
+        __pyx_t_6 = 0;
+
+        /* "VCDataGenerator.pyx":196
+ *                 current = clone_seq[pointer]
+ *                 choice_array = [0, 1, 2, 3]
+ *                 choice_array.remove(current)             # <<<<<<<<<<<<<<
+ *                 clone_seq[pointer] = choice_array[_get_random_int(3)]
+ * 
+ */
+        __pyx_t_6 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyList_Type_remove, __pyx_v_choice_array, __pyx_v_current); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 196, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+        /* "VCDataGenerator.pyx":197
+ *                 choice_array = [0, 1, 2, 3]
+ *                 choice_array.remove(current)
+ *                 clone_seq[pointer] = choice_array[_get_random_int(3)]             # <<<<<<<<<<<<<<
+ * 
+ *             sim_read[i] = clone_seq[pointer]
+ */
+        __pyx_t_3 = __pyx_f_15VCDataGenerator__get_random_int(3); if (unlikely(__pyx_t_3 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_choice_array, __pyx_t_3, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        if (unlikely(__pyx_v_clone_seq == Py_None)) {
+          PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+          __PYX_ERR(0, 197, __pyx_L1_error)
+        }
+        if (unlikely((__Pyx_SetItemInt(__pyx_v_clone_seq, __pyx_v_pointer, __pyx_t_6, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+        /* "VCDataGenerator.pyx":193
+ *         else:
+ *             sequencing = _draw_from_uniform()
+ *             if sequencing < sequencing_error_prob:             # <<<<<<<<<<<<<<
+ *                 current = clone_seq[pointer]
+ *                 choice_array = [0, 1, 2, 3]
+ */
+      }
+
+      /* "VCDataGenerator.pyx":199
+ *                 clone_seq[pointer] = choice_array[_get_random_int(3)]
+ * 
+ *             sim_read[i] = clone_seq[pointer]             # <<<<<<<<<<<<<<
+ * 
+ *         pointer += 1
+ */
+      if (unlikely(__pyx_v_clone_seq == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 199, __pyx_L1_error)
+      }
+      __pyx_t_6 = __Pyx_GetItemInt_List(__pyx_v_clone_seq, __pyx_v_pointer, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      (__pyx_v_sim_read[__pyx_v_i]) = __pyx_t_3;
+    }
+    __pyx_L6:;
+
+    /* "VCDataGenerator.pyx":201
+ *             sim_read[i] = clone_seq[pointer]
+ * 
+ *         pointer += 1             # <<<<<<<<<<<<<<
+ *     return sim_read
+ * 
+ */
+    __pyx_v_pointer = (__pyx_v_pointer + 1);
+  }
+
+  /* "VCDataGenerator.pyx":202
+ * 
+ *         pointer += 1
+ *     return sim_read             # <<<<<<<<<<<<<<
+ * 
+ * def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_6 = __Pyx_carray_to_py_int(__pyx_v_sim_read, 0xB2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_r = __pyx_t_6;
+  __pyx_t_6 = 0;
+  goto __pyx_L0;
+
+  /* "VCDataGenerator.pyx":161
+ * 
+ * 
+ * cdef _simulate_read_varying_prob(list clone_seq, double alignment_error_prob_mean, double sequencing_error_prob_mean):             # <<<<<<<<<<<<<<
+ *     """
+ *     Given a sequence and a alignment and sequencing error, generate a mimic of a oxford nanopore read.
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_AddTraceback("VCDataGenerator._simulate_read_varying_prob", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_direction);
+  __Pyx_XDECREF(__pyx_v_current);
+  __Pyx_XDECREF(__pyx_v_choice_array);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "VCDataGenerator.pyx":204
+ *     return sim_read
+ * 
  * def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
  *     return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)
  * 
@@ -4618,7 +5135,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -4626,9 +5143,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("simulate_read", 1, 3, 3, 1); __PYX_ERR(0, 161, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("simulate_read", 1, 3, 3, 1); __PYX_ERR(0, 204, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -4636,14 +5153,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("simulate_read", 1, 3, 3, 2); __PYX_ERR(0, 161, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("simulate_read", 1, 3, 3, 2); __PYX_ERR(0, 204, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "simulate_read") < 0)) __PYX_ERR(0, 161, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "simulate_read") < 0)) __PYX_ERR(0, 204, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -4653,12 +5170,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
     __pyx_v_clone_seq = ((PyObject*)values[0]);
-    __pyx_v_alignment_error_prob = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_alignment_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
-    __pyx_v_sequencing_error_prob = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_sequencing_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
+    __pyx_v_alignment_error_prob = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_alignment_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
+    __pyx_v_sequencing_error_prob = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_sequencing_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("simulate_read", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 161, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("simulate_read", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 204, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4672,7 +5189,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_clone_seq), (&PyList_Type), 1, "clone_seq", 1))) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_clone_seq), (&PyList_Type), 1, "clone_seq", 1))) __PYX_ERR(0, 204, __pyx_L1_error)
   __pyx_r = __pyx_pf_15VCDataGenerator_simulate_read(__pyx_self, __pyx_v_clone_seq, __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob);
 
   /* function exit code */
@@ -4699,7 +5216,7 @@ static PyObject *__pyx_pf_15VCDataGenerator_simulate_read(CYTHON_UNUSED PyObject
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("simulate_read", 1);
 
-  /* "VCDataGenerator.pyx":162
+  /* "VCDataGenerator.pyx":205
  * 
  * def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):
  *     return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)             # <<<<<<<<<<<<<<
@@ -4707,14 +5224,14 @@ static PyObject *__pyx_pf_15VCDataGenerator_simulate_read(CYTHON_UNUSED PyObject
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_15VCDataGenerator__simulate_read(__pyx_v_clone_seq, __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_15VCDataGenerator__simulate_read(__pyx_v_clone_seq, __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "VCDataGenerator.pyx":161
- * 
+  /* "VCDataGenerator.pyx":204
+ *     return sim_read
  * 
  * def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
  *     return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)
@@ -4732,7 +5249,7 @@ static PyObject *__pyx_pf_15VCDataGenerator_simulate_read(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "VCDataGenerator.pyx":165
+/* "VCDataGenerator.pyx":208
  * 
  * 
  * def generate_random_clones():             # <<<<<<<<<<<<<<
@@ -4765,7 +5282,7 @@ static PyObject *__pyx_pf_15VCDataGenerator_2generate_random_clones(CYTHON_UNUSE
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_random_clones", 1);
 
-  /* "VCDataGenerator.pyx":166
+  /* "VCDataGenerator.pyx":209
  * 
  * def generate_random_clones():
  *     return _generate_random_clones()             # <<<<<<<<<<<<<<
@@ -4773,13 +5290,13 @@ static PyObject *__pyx_pf_15VCDataGenerator_2generate_random_clones(CYTHON_UNUSE
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_15VCDataGenerator__generate_random_clones(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_15VCDataGenerator__generate_random_clones(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "VCDataGenerator.pyx":165
+  /* "VCDataGenerator.pyx":208
  * 
  * 
  * def generate_random_clones():             # <<<<<<<<<<<<<<
@@ -4798,7 +5315,7 @@ static PyObject *__pyx_pf_15VCDataGenerator_2generate_random_clones(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "VCDataGenerator.pyx":169
+/* "VCDataGenerator.pyx":212
  * 
  * 
  * def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
@@ -4865,7 +5382,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -4873,9 +5390,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("generate_data_for_noise_reduction", 1, 3, 3, 1); __PYX_ERR(0, 169, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("generate_data_for_noise_reduction", 1, 3, 3, 1); __PYX_ERR(0, 212, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -4883,14 +5400,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("generate_data_for_noise_reduction", 1, 3, 3, 2); __PYX_ERR(0, 169, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("generate_data_for_noise_reduction", 1, 3, 3, 2); __PYX_ERR(0, 212, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "generate_data_for_noise_reduction") < 0)) __PYX_ERR(0, 169, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "generate_data_for_noise_reduction") < 0)) __PYX_ERR(0, 212, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -4899,13 +5416,13 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
-    __pyx_v_sample_size = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_sample_size == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
-    __pyx_v_alignment_error_prob = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_alignment_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
-    __pyx_v_sequencing_error_prob = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_sequencing_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
+    __pyx_v_sample_size = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_sample_size == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
+    __pyx_v_alignment_error_prob = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_alignment_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
+    __pyx_v_sequencing_error_prob = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_sequencing_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("generate_data_for_noise_reduction", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 169, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("generate_data_for_noise_reduction", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 212, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4958,43 +5475,43 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_data_for_noise_reduction", 1);
 
-  /* "VCDataGenerator.pyx":170
+  /* "VCDataGenerator.pyx":213
  * 
  * def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):
  *     noisy_images = []             # <<<<<<<<<<<<<<
  *     clean_images = []
  *     all_mutation_positions = []
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_noisy_images = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "VCDataGenerator.pyx":171
+  /* "VCDataGenerator.pyx":214
  * def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):
  *     noisy_images = []
  *     clean_images = []             # <<<<<<<<<<<<<<
  *     all_mutation_positions = []
  *     for _ in range(sample_size):
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_clean_images = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "VCDataGenerator.pyx":172
+  /* "VCDataGenerator.pyx":215
  *     noisy_images = []
  *     clean_images = []
  *     all_mutation_positions = []             # <<<<<<<<<<<<<<
  *     for _ in range(sample_size):
  *         clones = _generate_random_clones()
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_all_mutation_positions = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "VCDataGenerator.pyx":173
+  /* "VCDataGenerator.pyx":216
  *     clean_images = []
  *     all_mutation_positions = []
  *     for _ in range(sample_size):             # <<<<<<<<<<<<<<
@@ -5006,43 +5523,43 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v__ = __pyx_t_4;
 
-    /* "VCDataGenerator.pyx":174
+    /* "VCDataGenerator.pyx":217
  *     all_mutation_positions = []
  *     for _ in range(sample_size):
  *         clones = _generate_random_clones()             # <<<<<<<<<<<<<<
  *         noisy = []
  *         clean = []
  */
-    __pyx_t_1 = __pyx_f_15VCDataGenerator__generate_random_clones(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
+    __pyx_t_1 = __pyx_f_15VCDataGenerator__generate_random_clones(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_clones, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "VCDataGenerator.pyx":175
+    /* "VCDataGenerator.pyx":218
  *     for _ in range(sample_size):
  *         clones = _generate_random_clones()
  *         noisy = []             # <<<<<<<<<<<<<<
  *         clean = []
  *         for clone_type in range(DEFAULT_HEIGHT):
  */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 175, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_noisy, ((PyObject*)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "VCDataGenerator.pyx":176
+    /* "VCDataGenerator.pyx":219
  *         clones = _generate_random_clones()
  *         noisy = []
  *         clean = []             # <<<<<<<<<<<<<<
  *         for clone_type in range(DEFAULT_HEIGHT):
  *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
  */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_clean, ((PyObject*)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "VCDataGenerator.pyx":177
+    /* "VCDataGenerator.pyx":220
  *         noisy = []
  *         clean = []
  *         for clone_type in range(DEFAULT_HEIGHT):             # <<<<<<<<<<<<<<
@@ -5052,26 +5569,26 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
     for (__pyx_t_5 = 0; __pyx_t_5 < 0x64; __pyx_t_5+=1) {
       __pyx_v_clone_type = __pyx_t_5;
 
-      /* "VCDataGenerator.pyx":178
+      /* "VCDataGenerator.pyx":221
  *         clean = []
  *         for clone_type in range(DEFAULT_HEIGHT):
  *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)             # <<<<<<<<<<<<<<
  *             clean.append(clones[clone_index].copy())
- *             noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ *             noisy.append(_simulate_read_varying_prob(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))  # this should work on _simulate_read(*params) as well
  */
-      __pyx_t_6 = __pyx_f_15VCDataGenerator__get_random_int(4); if (unlikely(__pyx_t_6 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 178, __pyx_L1_error)
+      __pyx_t_6 = __pyx_f_15VCDataGenerator__get_random_int(4); if (unlikely(__pyx_t_6 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 221, __pyx_L1_error)
       __pyx_v_clone_index = __pyx_t_6;
 
-      /* "VCDataGenerator.pyx":179
+      /* "VCDataGenerator.pyx":222
  *         for clone_type in range(DEFAULT_HEIGHT):
  *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
  *             clean.append(clones[clone_index].copy())             # <<<<<<<<<<<<<<
- *             noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ *             noisy.append(_simulate_read_varying_prob(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))  # this should work on _simulate_read(*params) as well
  *         noisy_images.append(noisy)
  */
-      __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_clones, __pyx_v_clone_index, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 179, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_clones, __pyx_v_clone_index, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 222, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_copy); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 179, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_copy); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 222, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_7 = NULL;
@@ -5092,23 +5609,23 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
         PyObject *__pyx_callargs[2] = {__pyx_t_7, NULL};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+1-__pyx_t_6, 0+__pyx_t_6);
         __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       }
-      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_clean, __pyx_t_1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 179, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_clean, __pyx_t_1); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 222, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "VCDataGenerator.pyx":180
+      /* "VCDataGenerator.pyx":223
  *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
  *             clean.append(clones[clone_index].copy())
- *             noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))             # <<<<<<<<<<<<<<
+ *             noisy.append(_simulate_read_varying_prob(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))  # this should work on _simulate_read(*params) as well             # <<<<<<<<<<<<<<
  *         noisy_images.append(noisy)
  *         clean_images.append(clean)
  */
-      __pyx_t_8 = __Pyx_GetItemInt(__pyx_v_clones, __pyx_v_clone_index, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_GetItemInt(__pyx_v_clones, __pyx_v_clone_index, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 223, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_copy); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_copy); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_8 = NULL;
@@ -5129,38 +5646,38 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
         PyObject *__pyx_callargs[2] = {__pyx_t_8, NULL};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_7, __pyx_callargs+1-__pyx_t_6, 0+__pyx_t_6);
         __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
-      if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_1))) __PYX_ERR(0, 180, __pyx_L1_error)
-      __pyx_t_7 = __pyx_f_15VCDataGenerator__simulate_read(((PyObject*)__pyx_t_1), __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 180, __pyx_L1_error)
+      if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_1))) __PYX_ERR(0, 223, __pyx_L1_error)
+      __pyx_t_7 = __pyx_f_15VCDataGenerator__simulate_read_varying_prob(((PyObject*)__pyx_t_1), __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_noisy, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_noisy, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 223, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
 
-    /* "VCDataGenerator.pyx":181
+    /* "VCDataGenerator.pyx":224
  *             clean.append(clones[clone_index].copy())
- *             noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ *             noisy.append(_simulate_read_varying_prob(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))  # this should work on _simulate_read(*params) as well
  *         noisy_images.append(noisy)             # <<<<<<<<<<<<<<
  *         clean_images.append(clean)
  *     return noisy_images, clean_images
  */
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_noisy_images, __pyx_v_noisy); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 181, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_noisy_images, __pyx_v_noisy); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 224, __pyx_L1_error)
 
-    /* "VCDataGenerator.pyx":182
- *             noisy.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+    /* "VCDataGenerator.pyx":225
+ *             noisy.append(_simulate_read_varying_prob(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))  # this should work on _simulate_read(*params) as well
  *         noisy_images.append(noisy)
  *         clean_images.append(clean)             # <<<<<<<<<<<<<<
  *     return noisy_images, clean_images
  * 
  */
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_clean_images, __pyx_v_clean); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 182, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_clean_images, __pyx_v_clean); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 225, __pyx_L1_error)
   }
 
-  /* "VCDataGenerator.pyx":183
+  /* "VCDataGenerator.pyx":226
  *         noisy_images.append(noisy)
  *         clean_images.append(clean)
  *     return noisy_images, clean_images             # <<<<<<<<<<<<<<
@@ -5168,19 +5685,19 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(__pyx_v_noisy_images);
   __Pyx_GIVEREF(__pyx_v_noisy_images);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_noisy_images)) __PYX_ERR(0, 183, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_noisy_images)) __PYX_ERR(0, 226, __pyx_L1_error);
   __Pyx_INCREF(__pyx_v_clean_images);
   __Pyx_GIVEREF(__pyx_v_clean_images);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_clean_images)) __PYX_ERR(0, 183, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_clean_images)) __PYX_ERR(0, 226, __pyx_L1_error);
   __pyx_r = __pyx_t_7;
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "VCDataGenerator.pyx":169
+  /* "VCDataGenerator.pyx":212
  * 
  * 
  * def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
@@ -5207,7 +5724,373 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
   return __pyx_r;
 }
 
-/* "VCDataGenerator.pyx":186
+/* "VCDataGenerator.pyx":229
+ * 
+ * 
+ * def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
+ *     ref_seq = []
+ *     inp_seq = []
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_15VCDataGenerator_7generate_data_for_comparator(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+static PyMethodDef __pyx_mdef_15VCDataGenerator_7generate_data_for_comparator = {"generate_data_for_comparator", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15VCDataGenerator_7generate_data_for_comparator, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_15VCDataGenerator_7generate_data_for_comparator(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  int __pyx_v_sample_size;
+  double __pyx_v_alignment_error_prob;
+  double __pyx_v_sequencing_error_prob;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[3] = {0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("generate_data_for_comparator (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_MACROS
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_sample_size,&__pyx_n_s_alignment_error_prob,&__pyx_n_s_sequencing_error_prob,0};
+    if (__pyx_kwds) {
+      Py_ssize_t kw_args;
+      switch (__pyx_nargs) {
+        case  3: values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
+      switch (__pyx_nargs) {
+        case  0:
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_sample_size)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_alignment_error_prob)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("generate_data_for_comparator", 1, 3, 3, 1); __PYX_ERR(0, 229, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_sequencing_error_prob)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("generate_data_for_comparator", 1, 3, 3, 2); __PYX_ERR(0, 229, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        const Py_ssize_t kwd_pos_args = __pyx_nargs;
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "generate_data_for_comparator") < 0)) __PYX_ERR(0, 229, __pyx_L3_error)
+      }
+    } else if (unlikely(__pyx_nargs != 3)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+      values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+      values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+    }
+    __pyx_v_sample_size = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_sample_size == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
+    __pyx_v_alignment_error_prob = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_alignment_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
+    __pyx_v_sequencing_error_prob = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_sequencing_error_prob == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 229, __pyx_L3_error)
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("generate_data_for_comparator", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 229, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_AddTraceback("VCDataGenerator.generate_data_for_comparator", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_15VCDataGenerator_6generate_data_for_comparator(__pyx_self, __pyx_v_sample_size, __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob);
+
+  /* function exit code */
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_15VCDataGenerator_6generate_data_for_comparator(CYTHON_UNUSED PyObject *__pyx_self, int __pyx_v_sample_size, double __pyx_v_alignment_error_prob, double __pyx_v_sequencing_error_prob) {
+  PyObject *__pyx_v_ref_seq = NULL;
+  PyObject *__pyx_v_inp_seq = NULL;
+  PyObject *__pyx_v_labels = NULL;
+  CYTHON_UNUSED int __pyx_v__;
+  PyObject *__pyx_v_clones = NULL;
+  CYTHON_UNUSED long __pyx_v_clone_type;
+  int __pyx_v_clone_index;
+  long __pyx_v_i;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  long __pyx_t_5;
+  int __pyx_t_6;
+  long __pyx_t_7;
+  int __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("generate_data_for_comparator", 1);
+
+  /* "VCDataGenerator.pyx":230
+ * 
+ * def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):
+ *     ref_seq = []             # <<<<<<<<<<<<<<
+ *     inp_seq = []
+ *     labels = []
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_ref_seq = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "VCDataGenerator.pyx":231
+ * def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):
+ *     ref_seq = []
+ *     inp_seq = []             # <<<<<<<<<<<<<<
+ *     labels = []
+ *     for _ in range(sample_size):
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_inp_seq = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "VCDataGenerator.pyx":232
+ *     ref_seq = []
+ *     inp_seq = []
+ *     labels = []             # <<<<<<<<<<<<<<
+ *     for _ in range(sample_size):
+ *         clones = _generate_random_clones()
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_labels = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "VCDataGenerator.pyx":233
+ *     inp_seq = []
+ *     labels = []
+ *     for _ in range(sample_size):             # <<<<<<<<<<<<<<
+ *         clones = _generate_random_clones()
+ *         for clone_type in range(DEFAULT_HEIGHT):
+ */
+  __pyx_t_2 = __pyx_v_sample_size;
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v__ = __pyx_t_4;
+
+    /* "VCDataGenerator.pyx":234
+ *     labels = []
+ *     for _ in range(sample_size):
+ *         clones = _generate_random_clones()             # <<<<<<<<<<<<<<
+ *         for clone_type in range(DEFAULT_HEIGHT):
+ *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
+ */
+    __pyx_t_1 = __pyx_f_15VCDataGenerator__generate_random_clones(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_XDECREF_SET(__pyx_v_clones, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "VCDataGenerator.pyx":235
+ *     for _ in range(sample_size):
+ *         clones = _generate_random_clones()
+ *         for clone_type in range(DEFAULT_HEIGHT):             # <<<<<<<<<<<<<<
+ *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
+ *             for i in range(NUMBER_OF_MUTANTS):
+ */
+    for (__pyx_t_5 = 0; __pyx_t_5 < 0x64; __pyx_t_5+=1) {
+      __pyx_v_clone_type = __pyx_t_5;
+
+      /* "VCDataGenerator.pyx":236
+ *         clones = _generate_random_clones()
+ *         for clone_type in range(DEFAULT_HEIGHT):
+ *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)             # <<<<<<<<<<<<<<
+ *             for i in range(NUMBER_OF_MUTANTS):
+ *                 ref_seq.append(clones[i])
+ */
+      __pyx_t_6 = __pyx_f_15VCDataGenerator__get_random_int(4); if (unlikely(__pyx_t_6 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 236, __pyx_L1_error)
+      __pyx_v_clone_index = __pyx_t_6;
+
+      /* "VCDataGenerator.pyx":237
+ *         for clone_type in range(DEFAULT_HEIGHT):
+ *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
+ *             for i in range(NUMBER_OF_MUTANTS):             # <<<<<<<<<<<<<<
+ *                 ref_seq.append(clones[i])
+ *                 inp_seq.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ */
+      for (__pyx_t_7 = 0; __pyx_t_7 < 4; __pyx_t_7+=1) {
+        __pyx_v_i = __pyx_t_7;
+
+        /* "VCDataGenerator.pyx":238
+ *             clone_index = _get_random_int(NUMBER_OF_MUTANTS)
+ *             for i in range(NUMBER_OF_MUTANTS):
+ *                 ref_seq.append(clones[i])             # <<<<<<<<<<<<<<
+ *                 inp_seq.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ *                 labels.append(clone_index == i)
+ */
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_clones, __pyx_v_i, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_ref_seq, __pyx_t_1); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 238, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "VCDataGenerator.pyx":239
+ *             for i in range(NUMBER_OF_MUTANTS):
+ *                 ref_seq.append(clones[i])
+ *                 inp_seq.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))             # <<<<<<<<<<<<<<
+ *                 labels.append(clone_index == i)
+ *     return ref_seq, inp_seq, labels
+ */
+        __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_clones, __pyx_v_clone_index, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_9);
+        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_copy); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __pyx_t_9 = NULL;
+        __pyx_t_6 = 0;
+        #if CYTHON_UNPACK_METHODS
+        if (likely(PyMethod_Check(__pyx_t_10))) {
+          __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_10);
+          if (likely(__pyx_t_9)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+            __Pyx_INCREF(__pyx_t_9);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_10, function);
+            __pyx_t_6 = 1;
+          }
+        }
+        #endif
+        {
+          PyObject *__pyx_callargs[2] = {__pyx_t_9, NULL};
+          __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_10, __pyx_callargs+1-__pyx_t_6, 0+__pyx_t_6);
+          __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        }
+        if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_1))) __PYX_ERR(0, 239, __pyx_L1_error)
+        __pyx_t_10 = __pyx_f_15VCDataGenerator__simulate_read(((PyObject*)__pyx_t_1), __pyx_v_alignment_error_prob, __pyx_v_sequencing_error_prob); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_inp_seq, __pyx_t_10); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 239, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+
+        /* "VCDataGenerator.pyx":240
+ *                 ref_seq.append(clones[i])
+ *                 inp_seq.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ *                 labels.append(clone_index == i)             # <<<<<<<<<<<<<<
+ *     return ref_seq, inp_seq, labels
+ * 
+ */
+        __pyx_t_10 = __Pyx_PyBool_FromLong((__pyx_v_clone_index == __pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 240, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_labels, __pyx_t_10); if (unlikely(__pyx_t_8 == ((int)-1))) __PYX_ERR(0, 240, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      }
+    }
+  }
+
+  /* "VCDataGenerator.pyx":241
+ *                 inp_seq.append(_simulate_read(clones[clone_index].copy(), alignment_error_prob, sequencing_error_prob))
+ *                 labels.append(clone_index == i)
+ *     return ref_seq, inp_seq, labels             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_10 = PyTuple_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 241, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_10);
+  __Pyx_INCREF(__pyx_v_ref_seq);
+  __Pyx_GIVEREF(__pyx_v_ref_seq);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_v_ref_seq)) __PYX_ERR(0, 241, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_inp_seq);
+  __Pyx_GIVEREF(__pyx_v_inp_seq);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_v_inp_seq)) __PYX_ERR(0, 241, __pyx_L1_error);
+  __Pyx_INCREF(__pyx_v_labels);
+  __Pyx_GIVEREF(__pyx_v_labels);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_v_labels)) __PYX_ERR(0, 241, __pyx_L1_error);
+  __pyx_r = __pyx_t_10;
+  __pyx_t_10 = 0;
+  goto __pyx_L0;
+
+  /* "VCDataGenerator.pyx":229
+ * 
+ * 
+ * def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
+ *     ref_seq = []
+ *     inp_seq = []
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_AddTraceback("VCDataGenerator.generate_data_for_comparator", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_ref_seq);
+  __Pyx_XDECREF(__pyx_v_inp_seq);
+  __Pyx_XDECREF(__pyx_v_labels);
+  __Pyx_XDECREF(__pyx_v_clones);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "VCDataGenerator.pyx":244
  * 
  * 
  * def test_function_output():             # <<<<<<<<<<<<<<
@@ -5216,22 +6099,22 @@ static PyObject *__pyx_pf_15VCDataGenerator_4generate_data_for_noise_reduction(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_15VCDataGenerator_7test_function_output(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyMethodDef __pyx_mdef_15VCDataGenerator_7test_function_output = {"test_function_output", (PyCFunction)__pyx_pw_15VCDataGenerator_7test_function_output, METH_NOARGS, 0};
-static PyObject *__pyx_pw_15VCDataGenerator_7test_function_output(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_15VCDataGenerator_9test_function_output(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyMethodDef __pyx_mdef_15VCDataGenerator_9test_function_output = {"test_function_output", (PyCFunction)__pyx_pw_15VCDataGenerator_9test_function_output, METH_NOARGS, 0};
+static PyObject *__pyx_pw_15VCDataGenerator_9test_function_output(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("test_function_output (wrapper)", 0);
   __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
-  __pyx_r = __pyx_pf_15VCDataGenerator_6test_function_output(__pyx_self);
+  __pyx_r = __pyx_pf_15VCDataGenerator_8test_function_output(__pyx_self);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_15VCDataGenerator_6test_function_output(CYTHON_UNUSED PyObject *__pyx_self) {
+static PyObject *__pyx_pf_15VCDataGenerator_8test_function_output(CYTHON_UNUSED PyObject *__pyx_self) {
   int __pyx_v_random_int;
   double __pyx_v_random_uniform;
   double __pyx_v_random_normal;
@@ -5248,56 +6131,56 @@ static PyObject *__pyx_pf_15VCDataGenerator_6test_function_output(CYTHON_UNUSED 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test_function_output", 1);
 
-  /* "VCDataGenerator.pyx":187
+  /* "VCDataGenerator.pyx":245
  * 
  * def test_function_output():
  *     cdef int random_int = _get_random_int(4)             # <<<<<<<<<<<<<<
  *     cdef double random_uniform = _draw_from_uniform()
  *     cdef double random_normal = _draw_from_normal(0, 1)
  */
-  __pyx_t_1 = __pyx_f_15VCDataGenerator__get_random_int(4); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_15VCDataGenerator__get_random_int(4); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 245, __pyx_L1_error)
   __pyx_v_random_int = __pyx_t_1;
 
-  /* "VCDataGenerator.pyx":188
+  /* "VCDataGenerator.pyx":246
  * def test_function_output():
  *     cdef int random_int = _get_random_int(4)
  *     cdef double random_uniform = _draw_from_uniform()             # <<<<<<<<<<<<<<
  *     cdef double random_normal = _draw_from_normal(0, 1)
  * 
  */
-  __pyx_t_2 = __pyx_f_15VCDataGenerator__draw_from_uniform(); if (unlikely(__pyx_t_2 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 188, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_15VCDataGenerator__draw_from_uniform(); if (unlikely(__pyx_t_2 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 246, __pyx_L1_error)
   __pyx_v_random_uniform = __pyx_t_2;
 
-  /* "VCDataGenerator.pyx":189
+  /* "VCDataGenerator.pyx":247
  *     cdef int random_int = _get_random_int(4)
  *     cdef double random_uniform = _draw_from_uniform()
  *     cdef double random_normal = _draw_from_normal(0, 1)             # <<<<<<<<<<<<<<
  * 
  *     return random_int, random_uniform, random_normal
  */
-  __pyx_t_2 = __pyx_f_15VCDataGenerator__draw_from_normal(0.0, 1.0); if (unlikely(__pyx_t_2 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_15VCDataGenerator__draw_from_normal(0.0, 1.0); if (unlikely(__pyx_t_2 == ((double)-1) && PyErr_Occurred())) __PYX_ERR(0, 247, __pyx_L1_error)
   __pyx_v_random_normal = __pyx_t_2;
 
-  /* "VCDataGenerator.pyx":191
+  /* "VCDataGenerator.pyx":249
  *     cdef double random_normal = _draw_from_normal(0, 1)
  * 
  *     return random_int, random_uniform, random_normal             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_random_int); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_random_int); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_random_uniform); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_random_uniform); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_random_normal); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_random_normal); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 191, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_3)) __PYX_ERR(0, 191, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_4);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_4)) __PYX_ERR(0, 191, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_5);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error);
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
@@ -5305,7 +6188,7 @@ static PyObject *__pyx_pf_15VCDataGenerator_6test_function_output(CYTHON_UNUSED 
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "VCDataGenerator.pyx":186
+  /* "VCDataGenerator.pyx":244
  * 
  * 
  * def test_function_output():             # <<<<<<<<<<<<<<
@@ -5352,8 +6235,8 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
     {&__pyx_n_s_VCDataGenerator, __pyx_k_VCDataGenerator, sizeof(__pyx_k_VCDataGenerator), 0, 0, 1, 1},
     {&__pyx_kp_s_VCDataGenerator_pyx, __pyx_k_VCDataGenerator_pyx, sizeof(__pyx_k_VCDataGenerator_pyx), 0, 0, 1, 0},
+    {&__pyx_n_s__11, __pyx_k__11, sizeof(__pyx_k__11), 0, 0, 1, 1},
     {&__pyx_n_s__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 1, 1},
-    {&__pyx_n_s__9, __pyx_k__9, sizeof(__pyx_k__9), 0, 0, 1, 1},
     {&__pyx_n_s_alignment_error_prob, __pyx_k_alignment_error_prob, sizeof(__pyx_k_alignment_error_prob), 0, 0, 1, 1},
     {&__pyx_n_s_all_mutation_positions, __pyx_k_all_mutation_positions, sizeof(__pyx_k_all_mutation_positions), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
@@ -5366,9 +6249,13 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_clones, __pyx_k_clones, sizeof(__pyx_k_clones), 0, 0, 1, 1},
     {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
     {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
+    {&__pyx_n_s_generate_data_for_comparator, __pyx_k_generate_data_for_comparator, sizeof(__pyx_k_generate_data_for_comparator), 0, 0, 1, 1},
     {&__pyx_n_s_generate_data_for_noise_reductio, __pyx_k_generate_data_for_noise_reductio, sizeof(__pyx_k_generate_data_for_noise_reductio), 0, 0, 1, 1},
     {&__pyx_n_s_generate_random_clones, __pyx_k_generate_random_clones, sizeof(__pyx_k_generate_random_clones), 0, 0, 1, 1},
+    {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
+    {&__pyx_n_s_inp_seq, __pyx_k_inp_seq, sizeof(__pyx_k_inp_seq), 0, 0, 1, 1},
     {&__pyx_n_s_is_coroutine, __pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 0, 1, 1},
+    {&__pyx_n_s_labels, __pyx_k_labels, sizeof(__pyx_k_labels), 0, 0, 1, 1},
     {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
     {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
     {&__pyx_n_s_noisy, __pyx_k_noisy, sizeof(__pyx_k_noisy), 0, 0, 1, 1},
@@ -5377,6 +6264,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_random_normal, __pyx_k_random_normal, sizeof(__pyx_k_random_normal), 0, 0, 1, 1},
     {&__pyx_n_s_random_uniform, __pyx_k_random_uniform, sizeof(__pyx_k_random_uniform), 0, 0, 1, 1},
     {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+    {&__pyx_n_s_ref_seq, __pyx_k_ref_seq, sizeof(__pyx_k_ref_seq), 0, 0, 1, 1},
     {&__pyx_n_s_remove, __pyx_k_remove, sizeof(__pyx_k_remove), 0, 0, 1, 1},
     {&__pyx_n_s_sample_size, __pyx_k_sample_size, sizeof(__pyx_k_sample_size), 0, 0, 1, 1},
     {&__pyx_n_s_sequencing_error_prob, __pyx_k_sequencing_error_prob, sizeof(__pyx_k_sequencing_error_prob), 0, 0, 1, 1},
@@ -5404,50 +6292,62 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "VCDataGenerator.pyx":161
- * 
+  /* "VCDataGenerator.pyx":204
+ *     return sim_read
  * 
  * def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
  *     return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)
  * 
  */
-  __pyx_tuple_ = PyTuple_Pack(3, __pyx_n_s_clone_seq, __pyx_n_s_alignment_error_prob, __pyx_n_s_sequencing_error_prob); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(3, __pyx_n_s_clone_seq, __pyx_n_s_alignment_error_prob, __pyx_n_s_sequencing_error_prob); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_simulate_read, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_simulate_read, 204, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 204, __pyx_L1_error)
 
-  /* "VCDataGenerator.pyx":165
+  /* "VCDataGenerator.pyx":208
  * 
  * 
  * def generate_random_clones():             # <<<<<<<<<<<<<<
  *     return _generate_random_clones()
  * 
  */
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_generate_random_clones, 165, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_generate_random_clones, 208, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 208, __pyx_L1_error)
 
-  /* "VCDataGenerator.pyx":169
+  /* "VCDataGenerator.pyx":212
  * 
  * 
  * def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
  *     noisy_images = []
  *     clean_images = []
  */
-  __pyx_tuple__5 = PyTuple_Pack(12, __pyx_n_s_sample_size, __pyx_n_s_alignment_error_prob, __pyx_n_s_sequencing_error_prob, __pyx_n_s_noisy_images, __pyx_n_s_clean_images, __pyx_n_s_all_mutation_positions, __pyx_n_s__4, __pyx_n_s_clones, __pyx_n_s_noisy, __pyx_n_s_clean, __pyx_n_s_clone_type, __pyx_n_s_clone_index); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(12, __pyx_n_s_sample_size, __pyx_n_s_alignment_error_prob, __pyx_n_s_sequencing_error_prob, __pyx_n_s_noisy_images, __pyx_n_s_clean_images, __pyx_n_s_all_mutation_positions, __pyx_n_s__4, __pyx_n_s_clones, __pyx_n_s_noisy, __pyx_n_s_clean, __pyx_n_s_clone_type, __pyx_n_s_clone_index); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 12, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_generate_data_for_noise_reductio, 169, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 12, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_generate_data_for_noise_reductio, 212, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 212, __pyx_L1_error)
 
-  /* "VCDataGenerator.pyx":186
+  /* "VCDataGenerator.pyx":229
+ * 
+ * 
+ * def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
+ *     ref_seq = []
+ *     inp_seq = []
+ */
+  __pyx_tuple__7 = PyTuple_Pack(11, __pyx_n_s_sample_size, __pyx_n_s_alignment_error_prob, __pyx_n_s_sequencing_error_prob, __pyx_n_s_ref_seq, __pyx_n_s_inp_seq, __pyx_n_s_labels, __pyx_n_s__4, __pyx_n_s_clones, __pyx_n_s_clone_type, __pyx_n_s_clone_index, __pyx_n_s_i); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_generate_data_for_comparator, 229, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 229, __pyx_L1_error)
+
+  /* "VCDataGenerator.pyx":244
  * 
  * 
  * def test_function_output():             # <<<<<<<<<<<<<<
  *     cdef int random_int = _get_random_int(4)
  *     cdef double random_uniform = _draw_from_uniform()
  */
-  __pyx_tuple__7 = PyTuple_Pack(3, __pyx_n_s_random_int, __pyx_n_s_random_uniform, __pyx_n_s_random_normal); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_test_function_output, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(3, __pyx_n_s_random_int, __pyx_n_s_random_uniform, __pyx_n_s_random_normal); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_VCDataGenerator_pyx, __pyx_n_s_test_function_output, 244, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -5874,52 +6774,64 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "VCDataGenerator.pyx":161
- * 
+  /* "VCDataGenerator.pyx":204
+ *     return sim_read
  * 
  * def simulate_read(list clone_seq, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
  *     return _simulate_read(clone_seq, alignment_error_prob, sequencing_error_prob)
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_1simulate_read, 0, __pyx_n_s_simulate_read, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_1simulate_read, 0, __pyx_n_s_simulate_read, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_simulate_read, __pyx_t_4) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_simulate_read, __pyx_t_4) < 0) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "VCDataGenerator.pyx":165
+  /* "VCDataGenerator.pyx":208
  * 
  * 
  * def generate_random_clones():             # <<<<<<<<<<<<<<
  *     return _generate_random_clones()
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_3generate_random_clones, 0, __pyx_n_s_generate_random_clones, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_3generate_random_clones, 0, __pyx_n_s_generate_random_clones, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_generate_random_clones, __pyx_t_4) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_generate_random_clones, __pyx_t_4) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "VCDataGenerator.pyx":169
+  /* "VCDataGenerator.pyx":212
  * 
  * 
  * def generate_data_for_noise_reduction(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
  *     noisy_images = []
  *     clean_images = []
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_5generate_data_for_noise_reduction, 0, __pyx_n_s_generate_data_for_noise_reductio, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_5generate_data_for_noise_reduction, 0, __pyx_n_s_generate_data_for_noise_reductio, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_generate_data_for_noise_reductio, __pyx_t_4) < 0) __PYX_ERR(0, 169, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_generate_data_for_noise_reductio, __pyx_t_4) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "VCDataGenerator.pyx":186
+  /* "VCDataGenerator.pyx":229
+ * 
+ * 
+ * def generate_data_for_comparator(int sample_size, double alignment_error_prob, double sequencing_error_prob):             # <<<<<<<<<<<<<<
+ *     ref_seq = []
+ *     inp_seq = []
+ */
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_7generate_data_for_comparator, 0, __pyx_n_s_generate_data_for_comparator, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_generate_data_for_comparator, __pyx_t_4) < 0) __PYX_ERR(0, 229, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "VCDataGenerator.pyx":244
  * 
  * 
  * def test_function_output():             # <<<<<<<<<<<<<<
  *     cdef int random_int = _get_random_int(4)
  *     cdef double random_uniform = _draw_from_uniform()
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_7test_function_output, 0, __pyx_n_s_test_function_output, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_15VCDataGenerator_9test_function_output, 0, __pyx_n_s_test_function_output, NULL, __pyx_n_s_VCDataGenerator, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_function_output, __pyx_t_4) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_function_output, __pyx_t_4) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "VCDataGenerator.pyx":1
@@ -10188,7 +11100,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__9);
+        name = __Pyx_NewRef(__pyx_n_s__11);
     }
     return name;
 }
