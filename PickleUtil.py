@@ -8,13 +8,13 @@ using Minimap and
 import numpy as np
 
 class PickleLoader:
-    def __init__(self, sequence="CRT",clones=["7G8"]) -> None:
+    def __init__(self, sequence="CRT",clones=["7G8"], folder="pickle") -> None:
         self.supported_sequence = ("CRT","DHPS","DHFR")
         if sequence not in self.supported_sequence:
             raise ValueError("Currently supported are: " + str(self.supported_sequence))
         self.sequence = sequence
         self.clones = clones
-        self.pickle_path = r"pickle/" + sequence
+        self.pickle_path = folder + "/" + sequence
 
     def load_pickle(self):
         """
@@ -45,3 +45,18 @@ class PickleLoader:
 
         # Note: In the future we can modify this part to allow for custom pickle file names
         return "trimmed_data_" + str(clone) + ".pkl"
+
+def loadpickle(pickles_list):
+    """
+    This function serves to load the pickle fiels directly from the pickles_list
+
+    Returns
+    -------
+    list
+        List of reads loaded from the Pickle files arranged in the order of pickles_list
+    """
+    clones_sequence = []
+    for pickle in pickles_list:
+        clones_sequence.append(np.array(np.load(pickle,allow_pickle=True)).tolist())
+    return clones_sequence
+
