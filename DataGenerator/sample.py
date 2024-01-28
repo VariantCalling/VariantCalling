@@ -20,7 +20,7 @@ plt.show()
 
 # Cython
 start = time.time()
-noisy, clean = generate_data_for_noise_reduction(1000, alignment_error_prob=0.01, sequencing_error_prob=0.05)
+noisy, clean = generate_data_for_noise_reduction(1000, alignment_error_prob=0.003, sequencing_error_prob=0.01)
 print("Cython time taken: ", time.time() - start)
 
 plt.imshow(noisy[0], cmap='jet')
