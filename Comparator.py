@@ -65,7 +65,7 @@ def truncate_seq(truncation_range,seq_in):
             print(np.shape(np.array(seq_in)))
     return seq_in
 
-def run_comparator_inference(model, pickle_file, truncate_range=[]):
+def run_comparator_inference(model, pickle_file, clone_file, truncate_range=[]):
     """
     Wrapper to run inference using comparator model and a user-input pickle file
     """
@@ -87,7 +87,7 @@ def run_comparator_inference(model, pickle_file, truncate_range=[]):
     X_inp_val = np.vectorize(transdict.get)(X_inp_char)
 
     if truncate_range != []:
-        X_inp_val = truncate_seq(X_inp_valr)
+        X_inp_val = truncate_seq(X_inp_val)
 
     clones = []
     with open("clones_lib/" + clone_file, "r") as f:
@@ -96,7 +96,7 @@ def run_comparator_inference(model, pickle_file, truncate_range=[]):
             for char in clone.strip():
                 alignment.append(char)
             clones.append(alignment)
-    proportion_tracker = [0 for i in len(clones) + 1]
+    proportion_tracker = [0 for _ in range(len(clones) + 1)]
     clones_int = np.vectorize(transdict.get)(clones)
     pred_list = []
     for i in range(len(clones_int)):
@@ -106,4 +106,19 @@ def run_comparator_inference(model, pickle_file, truncate_range=[]):
             ref_list.append(clones_int[i])
             inp_list.append(X_inp_val[j].tolist())
         pred_list.append(model.predict([pd.DataFrame(ref_list).values, pd.DataFrame(inp_list).values]))
-    return pred_list
+
+    for i in range(np.shape(X_inp_val)[0]):
+        max = 0.0
+        for j in range(len(clones_int)):
+            #print(curr_pred[0][0])
+            if pred_list[j][i] > max:
+                max = pred_list[j][i]
+                predicted_clone = j
+        if max < 0.5:
+            predicted_clone = -9999
+        if predicted_clone == -9999:
+            clone_idx = 3
+        else:
+            clone_idx = predicted_clone
+        proportion_tracker[clone_idx] += 1
+    return proportion_tracker,pred_list
