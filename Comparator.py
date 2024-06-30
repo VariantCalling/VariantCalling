@@ -48,7 +48,7 @@ def load_comparator(model_path):
     """
     Wrapper to load the comparator model with self-handled initialization of custom Transformer model
     """
-    return tf.keras.models.load_model(model_path, custom_objects={"Transformer": Comparator.Transformer},safe_mode=False)
+    return tf.keras.models.load_model(model_path, custom_objects={"Transformer": Transformer},safe_mode=False)
 
 def truncate_seq(truncation_range,seq_in):
     truncated_chunks = []
