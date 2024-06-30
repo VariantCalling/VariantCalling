@@ -9,6 +9,7 @@ import pandas as pd
 import random
 import PickleUtil as PU
 import VariantCalling as vc
+import pickle
 
 # Define the vocabulary size and the embedding dimension
 vocab_size = 4 # A, T, C, G
