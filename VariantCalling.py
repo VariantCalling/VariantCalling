@@ -134,7 +134,7 @@ class VariantCallingData(VariantCalling):
                         coverage = 100, 
                         p_sequencing_error=0.0,
                         p_alignment_error=0.00,
-                        verbose=1) -> (np.ndarray, list) :
+                        verbose=1, return_idx=False) -> (np.ndarray, list) :
         """Wrapper to generate n alignments as specified in num_alignments.
         NOTE: Consider to merge this into simulate_alignments in the future.
         
@@ -160,16 +160,21 @@ class VariantCallingData(VariantCalling):
         """
         alignments = []
         prob_lists = []
+        alignments_idx = []
         for _ in tqdm(range(num_alignments)):
-            alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
+            if return_idx:
+                alignment, prob_list, alignment_idx = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error, return_idx)
+                alignments_idx.append(alignment_idx)
+            else:
+                alignment, prob_list = self.ratio_gen(coverage, p_sequencing_error, p_alignment_error)
             alignments.append(alignment)
             prob_lists.append(prob_list)
 
         self.alignments = alignments
         print(f"Done, Number of alignments: {num_alignments}")
-        return np.array(alignments), prob_lists
+        return np.array(alignments), prob_lists, np.array(alignments_idx)
 
-    def ratio_gen(self, coverage, p_sequencing_error=0, p_alignment_error=0) -> (list,list):
+    def ratio_gen(self, coverage, p_sequencing_error=0, p_alignment_error=0, return_idx=False) -> (list,list):
         """Wrapper to generate a single alignment based on a randomly generated ratio
         Returns np.ndarray of the alignment and the probability of the distribution
         
@@ -206,8 +211,10 @@ class VariantCallingData(VariantCalling):
             nb_coverage_list[random.randint(0,self.nb_clones - 1)] += 1        
 
         coverage_list = []
+        coverage_idx_list = []
         for clone_idx, nb_clone_coverage in enumerate(nb_coverage_list):
             for _ in range(0,nb_clone_coverage):
+                coverage_idx_list.append(clone_idx)
                 match self.gen_mode:
                     case 1: # Simulation
                         coverage_list.append(
@@ -221,9 +228,15 @@ class VariantCallingData(VariantCalling):
         # Here we shuffle the list and concatenate into the final alignment
         choice_indices = np.random.choice(len(coverage_list), coverage, replace=False)
         alignment = [self.clones[0]] # First row is always reference (assumed to be index at 0)
+        alignment_idx = [0]
         alignment += [coverage_list[i] for i in choice_indices] # Concatenate the randomized read to the reference row
+        for i in choice_indices:
+            alignment_idx.append(coverage_idx_list[i])
 
-        return alignment, prob_list
+        if return_idx:
+           return alignment, prob_list, alignment_idx
+        else:
+            return alignment, prob_list
 
     @staticmethod
     def _add_errors(self, clone, p_sequencing_error, p_alignment_error) -> list:
