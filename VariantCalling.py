@@ -1,7 +1,6 @@
 import random
 import math
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 from tqdm.notebook import tqdm
 import PickleUtil as PU
