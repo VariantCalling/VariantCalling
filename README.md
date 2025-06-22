@@ -23,7 +23,7 @@ Inputs include:
 
 sequence_selected:  "CRT" | "DHPS" | "DHFR" | "RBM200"
 
-For CRT example dataset, the user selects 1 out of the 10 data available:
+For CRT/DHPS/DHFR, example dataset, the user selects 1 out of the 10 data available:
 
 barcode = "02" # Options: 00-09
 
